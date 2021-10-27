@@ -1,5 +1,5 @@
-#include <bits/stdc++.h>
-#define int int64_t
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -24,18 +24,18 @@ struct DST {
       height++;
     }
     a.resize(pw, 0);
-    DST.resize(height - 1, vector<int> (pw, 0));
-    DST[0] = a;
+    dst.resize(height - 1, vector<int> (pw, 0));
+    dst[0] = a;
     for (int i = 1; i < height - 1; ++i) {
       int len = 1 << i;
       for (int center = len; center < pw; center += 2 * len) {
-        DST[i][center] = a[center];
+        dst[i][center] = a[center];
         for (int j = center + 1; j < center + len; ++j) {
-          DST[i][j] = sum(DST[i][j - 1], a[j]);
+          dst[i][j] = sum(dst[i][j - 1], a[j]);
         }
-        DST[i][center - 1] = a[center - 1];
+        dst[i][center - 1] = a[center - 1];
         for (int j = center - 2; j >= center - len; --j) {
-          DST[i][j] = sum(DST[i][j + 1], a[j]);
+          dst[i][j] = sum(dst[i][j + 1], a[j]);
         }
       }
     }
@@ -43,14 +43,14 @@ struct DST {
 
   int get(int l, int r) {
     if (l == r) {
-      return DST[0][l];
+      return dst[0][l];
     }
     int dif = 63 - __builtin_clzll(r ^ l);
-    return sum(DST[dif][r], DST[dif][l]);
+    return sum(dst[dif][r], dst[dif][l]);
   }
 
  private:
-  vector<vector<int>> DST;
+  vector<vector<int>> dst;
 };
 
 // solution for https://codeforces.com/gym/100093/problem/D
