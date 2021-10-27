@@ -10,7 +10,7 @@
 1. van Emde Boas tree [(wiki)](https://en.wikipedia.org/wiki/Van_Emde_Boas_tree)
 
 ### Data Structures for RMQ and similar problems:
-1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404/7)
+1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
 
 ### Other data structures:
 1. Persistent stack [(wiki)](https://en.wikipedia.org/wiki/Van_Emde_Boas_tree)
