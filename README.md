@@ -13,4 +13,4 @@
 1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
 
 ### Other data structures:
-1. Persistent stack [(wiki)](https://en.wikipedia.org/wiki/Van_Emde_Boas_tree)
+1. Persistent stack
