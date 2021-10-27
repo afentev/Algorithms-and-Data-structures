@@ -14,3 +14,4 @@
 
 ### Other data structures:
 1. Persistent stack
+2. Queue with minimum 
