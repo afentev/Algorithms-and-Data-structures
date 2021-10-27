@@ -21,6 +21,8 @@ class BinaryHeap {
     values[0] = values[--end];
     keys[0] = keys[end];
     siftDown(0);
+    values.pop_back();
+    keys.pop_back();
     return ret;
   }
 
