@@ -9,12 +9,12 @@
 
 
 // this constexpr are needed for const template declarations   ¯\_(ツ)_/¯
-constexpr static uint8_t const aSize[33] {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+constexpr static uint8_t const aSize[33] {3, 3, 3, 3, 3, 3, 3, 6, 6, 6, 6, 6, 6, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
                                           12, 12, 24, 24, 24, 24, 24, 24, 24, 24};
 constexpr const uint8_t* aPtr = &aSize[0];
 
-constexpr static uint8_t const ofSize[49] {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 8, 9, 10, 11, 12,
-                                           6, 6, 6, 6, 6, 6, 7, 8};
+constexpr static uint8_t const ofSize[33] {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 3, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                                           3, 3, 3, 4, 5, 6, 7, 8};
 constexpr const uint8_t* ofPtr = &ofSize[0];
 
 
@@ -26,9 +26,7 @@ class Tree;
 template <uint8_t size>
 class vEB {
  public:
-  vEB() {
-    tree = Tree<size>();
-  }
+  vEB(): tree(Tree<size>()) {}
 
   void insert(int32_t el) {
     tree.insert(el);
@@ -65,7 +63,7 @@ class vEB {
 template <uint8_t sz>
 class Tree {
  public:
-  explicit Tree(): min(-1), max(-2) {  // Receives k from [0; 2^k)
+  explicit Tree(): min(-1), max(-2), of2(ofPtr[sz]), l2(1u << of2) {  // Receives k from [0; 2^k)
     uint8_t a = aSize[sz];
     /*
      * uint8_t a = 6;
@@ -82,8 +80,8 @@ class Tree {
      */
     uint32_t l1 = 1 << a;
     //of2 = sz - a;        ofSize contains right these values
-    of2 = ofPtr[sz];
-    l2 = 1u << of2;
+//    of2 = ofPtr[sz];
+//    l2 = 1u << of2;
 
     children.reserve(l1);
     for (int i = 0; i < l1; ++i) {
@@ -257,11 +255,11 @@ class Tree {
   }
 
   std::vector<Tree<*(ofPtr + sz)>> children;
-  uint64_t l2;
   Tree<*(aPtr + sz)>* used;
   int32_t min;
   int32_t max;
-  uint8_t of2;  // fast lo(x) and hi(x)
+  const uint8_t of2;  // fast lo(x) and hi(x)
+  const uint64_t l2;
 };
 
 template <>  // 2^6=64 - elements are in bitset
@@ -309,6 +307,147 @@ class Tree<6> {
 
  private:
   uint64_t bitset;
+};
+
+template <>
+class Tree<5> {
+ public:
+  Tree() {
+    bitset = 0u;
+  }
+
+  void insert(int32_t el) {
+    bitset |= 1u << (31 - el);
+  }
+
+  void remove(int32_t el) {
+    bitset &= ~(1u << (31 - el));
+  }
+
+  [[nodiscard]] int32_t next(int32_t el) const {
+    uint64_t tmp = (bitset << el);
+    if (tmp == 0) {
+      return -1;
+    }
+    return el + __builtin_clz(tmp);
+  }
+
+  [[nodiscard]] int32_t prev(int32_t el) const {
+    uint64_t tmp = (bitset >> (31 - el));
+    if (tmp == 0) {
+      return -1;
+    }
+    return el - __builtin_ctz(tmp);
+  }
+
+  [[nodiscard]] int32_t getMin() const {
+    return __builtin_clz(bitset);
+  }
+
+  [[nodiscard]] int32_t getMax() const {
+    return 31 - __builtin_ctz(bitset);
+  }
+
+  [[nodiscard]] bool isEmpty() const {
+    return bitset == 0;
+  }
+
+ private:
+  uint32_t bitset;
+};
+
+template <>
+class Tree<4> {
+ public:
+  Tree() {
+    bitset = 0u;
+  }
+
+  void insert(int32_t el) {
+    bitset |= 1u << (15 - el);
+  }
+
+  void remove(int32_t el) {
+    bitset &= ~(1u << (15 - el));
+  }
+
+  [[nodiscard]] int32_t next(int32_t el) const {
+    uint32_t tmp = (bitset << (el + 16));
+    if (tmp == 0) {
+      return -1;
+    }
+    return el + __builtin_clz(tmp);
+  }
+
+  [[nodiscard]] int32_t prev(int32_t el) const {
+    uint32_t tmp = (bitset >> (15 - el));
+    if (tmp == 0) {
+      return -1;
+    }
+    return el - __builtin_ctz(tmp);
+  }
+
+  [[nodiscard]] int32_t getMin() const {
+    return __builtin_clz(bitset) - 16;
+  }
+
+  [[nodiscard]] int32_t getMax() const {
+    return 15 - __builtin_ctz(bitset);
+  }
+
+  [[nodiscard]] bool isEmpty() const {
+    return bitset == 0;
+  }
+
+ private:
+  uint16_t bitset;
+};
+
+template <>
+class Tree<3> {
+ public:
+  Tree() {
+    bitset = 0u;
+  }
+
+  void insert(int32_t el) {
+    bitset |= 1u << (7 - el);
+  }
+
+  void remove(int32_t el) {
+    bitset &= ~(1u << (7 - el));
+  }
+
+  [[nodiscard]] int32_t next(int32_t el) const {
+    uint32_t tmp = (bitset << (el + 24));
+    if (tmp == 0) {
+      return -1;
+    }
+    return el + __builtin_clz(tmp);
+  }
+
+  [[nodiscard]] int32_t prev(int32_t el) const {
+    uint32_t tmp = (bitset >> (7 - el));
+    if (tmp == 0) {
+      return -1;
+    }
+    return el - __builtin_ctz(tmp);
+  }
+
+  [[nodiscard]] int32_t getMin() const {
+    return __builtin_clz(bitset) - 24;
+  }
+
+  [[nodiscard]] int32_t getMax() const {
+    return 7 - __builtin_ctz(bitset);
+  }
+
+  [[nodiscard]] bool isEmpty() const {
+    return bitset == 0;
+  }
+
+ private:
+  uint8_t bitset;
 };
 
 int main() {
