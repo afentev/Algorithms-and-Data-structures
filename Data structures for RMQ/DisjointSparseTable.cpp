@@ -45,7 +45,7 @@ struct DST {
     if (l == r) {
       return dst[0][l];
     }
-    int dif = 63 - __builtin_clz(r ^ l);
+    int dif = 63 - __builtin_clzll(r ^ l);
     return sum(dst[dif][r], dst[dif][l]);
   }
 
