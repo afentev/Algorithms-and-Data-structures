@@ -1,6 +1,9 @@
 # Algorithms-and-Data-structures
 
 ## Following stuff is already implemented:
+
+### Sorting algorithms
+1. Quickselect *(selection algorithm)* [(wiki)](https://en.wikipedia.org/wiki/Quickselect)
 ### Heaps:
 1. Binary heap [(wiki)](https://en.wikipedia.org/wiki/Binary_heap)
 2. Binomial heap [(wiki)](https://en.wikipedia.org/wiki/Binomial_heap)
