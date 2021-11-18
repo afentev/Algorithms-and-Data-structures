@@ -94,17 +94,18 @@ class BigInteger {
     if (isNegative) {
       x = -x;
     }
-    __int128_t bound = base;
+    uint64_t bound = base;
+    uint64_t copy = x;
     size_t power = 1;
-    while (bound <= x) {
+    while (bound <= copy) {
       bound *= base;
       ++power;
     }
     digits.resize(power, 0);
     size_t pos = 0;
-    while (x > 0) {
-      digits[pos++] = x % base;  // get n-th bit and increment it after
-      x /= base;
+    while (copy > 0) {
+      digits[pos++] = copy % base;  // get n-th bit and increment it after
+      copy /= base;
     }
   }
 
@@ -115,6 +116,7 @@ class BigInteger {
       isNegative = false;
     }
     int64_t number = 0;
+    digits.reserve(str.size() / 6 + 1);
     for (int64_t ind = static_cast<int64_t>(str.size()) - 1; ind >= isNegative; --ind) {
       number += (str[ind] - '0') * binPow(10, (str.size() - ind - 1) % power);
       if ((str.size() - ind) % power == 0) {
@@ -159,15 +161,15 @@ class BigInteger {
     BigInteger difference = *this;
     difference.isNegative = false;
     for (int64_t rank = static_cast<int64_t>(res.digits.size()) - 1; rank >= 0 && difference != 0; --rank) {
-      __int128_t lhs = -1;
-      __int128_t rhs = base;
+      int64_t lhs = -1;
+      int64_t rhs = base;
       BigInteger correction;
       BigInteger lastLhs;
       while (rhs - lhs > 1) {
-        __int128_t mid = (rhs + lhs) / 2;
+        int64_t mid = (rhs + lhs) / 2;
         correction = other.fastMultiplication(mid);
         correction.isNegative = false;
-        __int128_t prev = static_cast<__int128_t>(correction.digits.size());
+        int64_t prev = static_cast<int64_t>(correction.digits.size());
         correction.digits.resize(prev + rank);
         for (int64_t i = prev + rank - 1; i >= rank; --i) {
           correction.digits[i] = correction.digits[i - rank];
@@ -248,9 +250,9 @@ class BigInteger {
     if (isNegative && (digits.size() != 1 || digits[0] != 0)) {
       res = '-';
     }
-    res += print_u128_u(digits.back());
+    res += std::to_string(digits.back());
     for (int64_t i = static_cast<int64_t>(digits.size()) - 2; i >= 0; --i) {
-      std::string str = print_u128_u(digits[i]);
+      std::string str = std::to_string(digits[i]);
       res += std::string(power - str.size(), '0') + str;
     }
     return res;
@@ -286,17 +288,17 @@ class BigInteger {
         negateRight = true;
       }
     }
-    __int128_t carry = 0;
+    int64_t carry = 0;
     size_t index = 0;
     for (; index < std::min(digits.size(), other.digits.size()); ++index) {
-      __int128_t sum = digits[index] * (negateLeft? -1: 1) +
-          other.digits[index] * (negateRight? -1: 1) +
+      int64_t sum = digits[index] * (negateLeft? -1LL: 1LL) +
+          other.digits[index] * (negateRight? -1LL: 1LL) +
           carry;
       digits[index] = modulo(sum, base);
       carry = (sum >= base) - (sum < 0);
     }
     for (; index < digits.size(); ++index) {
-      __int128_t sum = digits[index] + carry;
+      int64_t sum = digits[index] * 1LL + carry;
       digits[index] = modulo(sum, base);
       carry = (sum >= base) - (sum < 0);
       if (carry == 0) {
@@ -305,7 +307,7 @@ class BigInteger {
       }
     }
     for (; index < other.digits.size(); ++index) {
-      __int128_t sum = other.digits[index] + carry;
+      int64_t sum = other.digits[index] * 1LL + carry;
       digits.push_back(modulo(sum, base));
       carry = (sum >= base) - (sum < 0);
     }
@@ -347,19 +349,19 @@ class BigInteger {
     return false;
   }
 
-  static __int128_t modulo(__int128_t a, __int128_t b) {
-    __int128_t res = a % b;
+  static int64_t modulo(int64_t a, int64_t b) {
+    int64_t res = a % b;
     if (res < 0) {
       return base + res;
     }
     return res;
   }
 
-  [[nodiscard]] BigInteger fastMultiplication(__int128_t b) const {
+  [[nodiscard]] BigInteger fastMultiplication(int64_t b) const {
     BigInteger result(*this);
-    __int128_t carry = 0;
-    for (__int128_t& digit : result.digits) {
-      __int128_t cur = carry + digit * b;
+    int64_t carry = 0;
+    for (int32_t & digit : result.digits) {
+      int64_t cur = carry + digit * b;
       digit = cur % base;
       carry = cur / base;
     }
@@ -375,13 +377,13 @@ class BigInteger {
     BigInteger result;
     result.digits.resize(digits.size() + other.digits.size());
     for (size_t leftInd = 0; leftInd < digits.size(); ++leftInd) {
-      __int128_t carry = 0;
+      int64_t carry = 0;
       for (size_t rightInd = 0; rightInd < other.digits.size() || carry != 0; ++rightInd) {
-        __int128_t cur;
+        int64_t cur;
         if (rightInd >= other.digits.size()) {
-          cur = result.digits[leftInd + rightInd] + carry;
+          cur = result.digits[leftInd + rightInd] * 1LL + carry;
         } else {
-          cur = result.digits[leftInd + rightInd] + digits[leftInd] * other.digits[rightInd] + carry;
+          cur = result.digits[leftInd + rightInd] * 1LL + (digits[leftInd] * 1LL) * other.digits[rightInd] + carry;
         }
         result.digits[leftInd + rightInd] = cur % base;
         carry = cur / base;
@@ -435,8 +437,8 @@ class BigInteger {
     }
   }
 
-  static void fftMultiplication(const std::vector<__int128_t>& a, const std::vector<__int128_t>& b,
-                                std::vector<__int128_t>& res) {
+  static void fftMultiplication(const std::vector<int32_t>& a, const std::vector<int32_t>& b,
+                                std::vector<int32_t>& res) {
     std::vector<Complex> A(a.begin(), a.end());
     std::vector<Complex> B(b.begin(), b.end());
     size_t n = 1ull << (33 - __builtin_clz(static_cast<uint32_t>(a.size() + b.size())));
@@ -450,23 +452,21 @@ class BigInteger {
 
     fft(A.data(), n, false);
     res.assign(n, 0);
-    __int128_t carry = 0;
-    for (size_t ind = 0; ind < n || carry != 0; ++ind) {
-      __int128_t cur;
-      if (ind == res.size()) {
-        res.push_back(0);
-        cur = 0;
-      } else {
-        cur = static_cast<__int128_t>(std::roundl(A[ind].real));
+    for (size_t i = 0; i < n; ++i) {
+      int64_t cur = roundl(A[i].real);
+      size_t iteration = 0;
+      while (cur != 0) {
+        res[i + iteration] += cur % base;
+        cur /= base;
+        cur += res[i + iteration] / base;
+        res[i + iteration] %= base;
+        iteration++;
       }
-      res[ind] += carry;
-      carry = (res[ind] + cur) / base;
-      res[ind] = (res[ind] + cur) % base;
     }
   }
 
-  static __int128_t binPow(__int128_t base_, __int128_t exp) {
-    __int128_t result = 1;
+  static int64_t binPow(int64_t base_, int64_t exp) {
+    int64_t result = 1;
     while (exp) {
       if (exp % 2)
         result *= base_;
@@ -476,25 +476,11 @@ class BigInteger {
     return result;
   }
 
-  static std::string print_u128_u(__int128_t u128) {
-    std::string rc;
-    if (u128 > UINT64_MAX) {
-      __int128_t leading  = u128 / 10000000000000000000ULL;
-      uint64_t  trailing = u128 % 10000000000000000000ULL;
-      rc = print_u128_u(leading) + print_u128_u(trailing);
-    } else {
-      uint64_t u64 = u128;
-      rc = std::to_string(u64);
-    }
-    return rc;
-  }
-
-
   static const uint8_t power = 6;
   static const int64_t base = 1000000;  // binPow(10, power);
 
  private:
-  std::vector<__int128_t> digits;
+  std::vector<int32_t> digits;
   bool isNegative;
 };
 
