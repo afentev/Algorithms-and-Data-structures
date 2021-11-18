@@ -5,6 +5,20 @@
 #include <cmath>
 #include <vector>
 
+/*
+ * Long arithmetics with support of large integers (BigInteger) and rationals (Rational) numbers
+ * Integers are stored in a 10^6 base system
+ * Integers are multiplied using the Karatsuba algorithm (if their length is less than 50 in the given system)
+ * and using Fast Fourier Transform (with complex numbers) otherwise
+ *
+ * Rationals are stored as fractions of two BigIntegers
+ *
+ * Time complexities for basic operations with BigInteger:
+ * Summation and Subtraction - O(n)
+ * Multiplication - O(n*logn)
+ * Division - about O(n^2)
+ */
+
 const long double PI = 3.14159265358979323846264338327950288419716939937510L;
 
 class Complex {

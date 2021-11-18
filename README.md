@@ -2,6 +2,8 @@
 
 ## Following stuff is already implemented:
 
+### Math algorithms
+1. Long arithmetic [(cp-algorithms)](https://cp-algorithms.com/algebra/big-integer.html)
 ### Sorting algorithms
 1. Quickselect *(selection algorithm)* [(wiki)](https://en.wikipedia.org/wiki/Quickselect)
 ### Heaps:
