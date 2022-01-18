@@ -6,6 +6,7 @@
 1. Long arithmetic [(cp-algorithms)](https://cp-algorithms.com/algebra/big-integer.html)
 ### Sorting algorithms
 1. Quickselect *(selection algorithm)* [(wiki)](https://en.wikipedia.org/wiki/Quickselect)
+2. Quickselect with O(n) worst-case complexity. Uses Median of medians: [(wiki)](https://en.wikipedia.org/wiki/Median_of_medians)
 ### Heaps:
 1. Binary heap [(wiki)](https://en.wikipedia.org/wiki/Binary_heap)
 2. Binomial heap [(wiki)](https://en.wikipedia.org/wiki/Binomial_heap)
