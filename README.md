@@ -20,3 +20,6 @@
 ### Other data structures:
 1. Persistent stack
 2. Queue with minimum 
+
+### Other algorithms
+1. Longest increasing subsequence [(wiki)](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)
