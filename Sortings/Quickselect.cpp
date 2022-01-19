@@ -28,12 +28,13 @@ int quickSelect(std::vector<int> v, int k) {
     int pivot = v[pivotInd];
     // partition:
     std::swap(v[pivotInd], v[r]);
-    int i = l - 1;
-    for (int j = l; j <= r; ++j) {
-      if (v[j] <= pivot) {
-        std::swap(v[++i], v[j]);
+    int i = l;
+    for (int j = l; j < r; ++j) {
+      if (v[j] < pivot) {
+        std::swap(v[i++], v[j]);
       }
     }
+    std::swap(v[r], v[i]);
 
     if (i < k) {
       l = i + 1;
@@ -46,13 +47,20 @@ int quickSelect(std::vector<int> v, int k) {
 }
 
 int main() {
+  int n = 1e6;
   std::random_device rd_;
-  std::mt19937 g(rd_());
+  std::uniform_int_distribution<int> dist(0, INT32_MAX);
+  std::uniform_int_distribution<int> ind(0, n - 1);
 
-  std::vector<int> a {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-  std::shuffle(a.begin(), a.end(), g);
-  for (int i = 0; i < a.size(); ++i) {
-    std::cout << quickSelect(a, i) << std::endl;
+  std::vector<int> a;
+  for (int i = 0; i < n; ++i) {
+    a.push_back(dist(eng));
   }
+  auto begin = std::chrono::high_resolution_clock::now();
+
+  quickSelect(a, ind(eng));
+
+  auto end = std::chrono::high_resolution_clock::now();
+  std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;
   return 0;
 }
