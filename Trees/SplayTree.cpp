@@ -112,7 +112,7 @@ class SplayTree {
     return to;
   }
 
- public:
+ private:
   Node* root;
 
  public:

@@ -19,7 +19,7 @@
 
 #### Other algorithms related to sortings
 1. Quickselect *(selection algorithm)* [(wiki)](https://en.wikipedia.org/wiki/Quickselect)
-2. Quickselect with O(n) worst-case complexity. Uses Median of medians [(wiki)](https://en.wikipedia.org/wiki/Median_of_medians)
+2. Quickselect with _O(n)_ worst-case complexity. Uses Median of medians [(wiki)](https://en.wikipedia.org/wiki/Median_of_medians)
 
 ### Heaps:
 1. Binary heap [(wiki)](https://en.wikipedia.org/wiki/Binary_heap)
@@ -37,6 +37,7 @@
 1. Persistent stack
 2. Queue with minimum 
 3. Hashed array tree [(wiki)](https://en.wikipedia.org/wiki/Hashed_array_tree)
+4. Dynamic array with _Θ(1)_ _push_back_ complexity (no _O(n)_ worst-case)
 
 ### Other algorithms
 1. Longest increasing subsequence [(wiki)](https://en.wikipedia.org/wiki/Longest_increasing_subsequence)
