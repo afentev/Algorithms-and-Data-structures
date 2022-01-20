@@ -4,9 +4,23 @@
 
 ### Math algorithms
 1. Long arithmetic [(cp-algorithms)](https://cp-algorithms.com/algebra/big-integer.html)
+
 ### Sorting algorithms
+#### Sortings with _O(n²)_ average-case perfomance
+1. Insertion sort [(wiki)](https://en.wikipedia.org/wiki/Insertion_sort)
+2. Selection sort [(wiki)](https://en.wikipedia.org/wiki/Selection_sort)
+3. Bubble sort [(wiki)](https://en.wikipedia.org/wiki/Bubble_sort)
+
+#### Sortings with _O(n ∙ log(n))_ average-case perfomance
+1. Merge sort [(wiki)](https://en.wikipedia.org/wiki/Merge_sort)
+2. Quick sort [(wiki)](https://en.wikipedia.org/wiki/Quicksort)
+
+#### Non-comparative sorting algorithms
+
+#### Other algorithms related to sortings
 1. Quickselect *(selection algorithm)* [(wiki)](https://en.wikipedia.org/wiki/Quickselect)
-2. Quickselect with O(n) worst-case complexity. Uses Median of medians: [(wiki)](https://en.wikipedia.org/wiki/Median_of_medians)
+2. Quickselect with O(n) worst-case complexity. Uses Median of medians [(wiki)](https://en.wikipedia.org/wiki/Median_of_medians)
+
 ### Heaps:
 1. Binary heap [(wiki)](https://en.wikipedia.org/wiki/Binary_heap)
 2. Binomial heap [(wiki)](https://en.wikipedia.org/wiki/Binomial_heap)
