@@ -36,6 +36,10 @@
 ### Data Structures for RMQ and similar problems:
 1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
 
+### Algorithms on graphs:
+#### Shortest paths:
+1. Dijkstra's algorithm [(wiki)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+
 ### Other data structures:
 1. Persistent stack
 2. Queue with minimum 
