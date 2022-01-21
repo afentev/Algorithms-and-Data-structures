@@ -128,24 +128,33 @@ class AVL {
   }
 
   // 1st - techincal Node* for rebalance
-  // 2st - actual get's return value: found or inserted vertex
-  std::pair<Node*, Node*> get(const K& key, Node* vertex) {
+  // 2st - actual lookup return value: found or inserted vertex
+  // 3st - is rebalance needed
+  std::tuple<Node*, Node*, bool> lookup(const K& key, Node* vertex) {
     if (vertex == nullptr) {
       Node* created = new Node(key, V());
-      return {created, created};
+      return {created, created, true};
     }
-    std::pair<Node*, Node*> result;
+    std::tuple<Node*, Node*, bool> result;
     if (vertex->key < key) {
-      result = get(key, vertex->right);
-      vertex->right = result.first;
+      result = lookup(key, vertex->right);
+      vertex->right = std::get<0>(result);
     } else if (vertex->key > key) {
-      result = get(key, vertex->left);
-      vertex->left = result.first;
+      result = lookup(key, vertex->left);
+      vertex->left = std::get<0>(result);
     } else {
-      return {vertex, vertex};
+      return {vertex, vertex, false};
     }
-    return {rebalance(vertex), result.second};
+    if (std::get<2>(result)) {
+      size_t old = vertex->height;
+      Node* ret = rebalance(vertex);
+      size_t current = ret->height;
+      return {ret, std::get<1>(result), old != current};
+    }
+    return {vertex, std::get<1>(result), false};
   }
+
+ public:
 
  private:
   Node* root;
@@ -164,19 +173,35 @@ class AVL {
   }
 
   V& operator[](const K& key) {
-    auto result = get(key, root);
-    root = result.first;
-    return result.second->val;
+    auto result = lookup(key, root);
+    root = std::get<0>(result);
+    return std::get<1>(result)->val;
+  }
+
+  V& lookup(const K& key) {
+    Node* vertex = root;
+    while (true) {
+      if (vertex->key < key) {
+        vertex = vertex->right;
+      } else if (vertex->key > key) {
+        vertex = vertex->left;
+      } else {
+        return vertex->val;
+      }
+    }
+  }
+
+  const V& operator[](const K& key) const {
+    return lookup(key);
   }
 };
 
-
-int main() {
+void runTests() {
   AVL<int, int> t;
   std::map<int, int> m;
 
   int N = 1e6;
-  std::vector<int> d;
+  std::vector<int> d, r;
   d.reserve(N);
 
   for (int i = 0; i < N; ++i) {
@@ -199,28 +224,80 @@ int main() {
     assert(x.second == t[x.first]);
   }
 
-  std::cout << "All tests passed!" << std::endl;
+  std::cout << "All tests passed!\n" << std::endl;
+}
 
-  AVL<int, int> testST;
+void runPerfTests() {
+  const int N = 1e6;
+  AVL<int, int> testAVL;
   std::map<int, int> testM;
+
+  std::vector<int> keys, values;
+  keys.reserve(N);
+  values.reserve(N);
+  for (int i = 0; i < N; ++i) {
+    keys.push_back(rand());
+    values.push_back(rand());
+  }
+
+  // -----------------------------------------------------------------------------------------------------------------
   auto begin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < N; ++i) {
-    int k = rand();
-    int v = rand();
-    testST[k] = v;
+    testAVL[keys[i]] = values[i];
   }
   auto end = std::chrono::high_resolution_clock::now();
-  std::cout << "Splay tree insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+  std::cout << "AVL tree insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
             << "ms" << std::endl;
 
   begin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < N; ++i) {
-    int k = rand();
-    int v = rand();
-    testM[k] = v;
+    testM[keys[i]] = values[i];
   }
   end = std::chrono::high_resolution_clock::now();
-  std::cout << "Map insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms"
+  std::cout << "Map insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
             << std::endl;
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile int val = testAVL.lookup(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "AVL tree lookup: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile int val = testM[keys[i]];
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Map lookup: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
+            << std::endl;
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    testAVL.erase(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "AVL tree erase: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    testM.erase(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Map erase: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
+            << std::endl;
+
+}
+
+int main() {
+  runTests();
+  runPerfTests();
+
   return 0;
 }

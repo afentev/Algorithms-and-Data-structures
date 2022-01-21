@@ -186,6 +186,19 @@ class SplayTree {
     return nullptr;
   }
 
+  V& lookup(const K& key) {
+    Node* vertex = root;
+    while (true) {
+      if (vertex->key < key) {
+        vertex = vertex->right;
+      } else if (vertex->key > key) {
+        vertex = vertex->left;
+      } else {
+        return vertex->val;
+      }
+    }
+  }
+
   V& operator[](const K& key) {
     Node* dig = root;
     Node* parent = nullptr;
@@ -218,6 +231,10 @@ class SplayTree {
     return vertex->val;
   }
 
+  V& operator[](const K& key) const {
+    return lookup(key);
+  }
+
   SplayTree& operator=(const SplayTree& other) {
     copy(root, other.root);
     return *this;
@@ -225,12 +242,12 @@ class SplayTree {
 };
 
 
-int main() {
+void runTests() {
   SplayTree<int, int> t;
   std::map<int, int> m;
 
   int N = 1e6;
-  std::vector<int> d;
+  std::vector<int> d, r;
   d.reserve(N);
 
   for (int i = 0; i < N; ++i) {
@@ -253,15 +270,26 @@ int main() {
     assert(x.second == t[x.first]);
   }
 
-  std::cout << "All tests passed!" << std::endl;
+  std::cout << "All tests passed!\n" << std::endl;
+}
 
+void runPerfTests() {
+  const int N = 1e6;
   SplayTree<int, int> testST;
   std::map<int, int> testM;
+
+  std::vector<int> keys, values;
+  keys.reserve(N);
+  values.reserve(N);
+  for (int i = 0; i < N; ++i) {
+    keys.push_back(rand());
+    values.push_back(rand());
+  }
+
+  // -----------------------------------------------------------------------------------------------------------------
   auto begin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < N; ++i) {
-    int k = rand();
-    int v = rand();
-    testST[k] = v;
+    testST[keys[i]] = values[i];
   }
   auto end = std::chrono::high_resolution_clock::now();
   std::cout << "Splay tree insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
@@ -269,12 +297,53 @@ int main() {
 
   begin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < N; ++i) {
-    int k = rand();
-    int v = rand();
-    testM[k] = v;
+    testM[keys[i]] = values[i];
   }
   end = std::chrono::high_resolution_clock::now();
-  std::cout << "Map insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms"
+  std::cout << "Map insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
             << std::endl;
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile int val = testST.lookup(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Splay tree lookup: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile int val = testM[keys[i]];
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Map lookup: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
+            << std::endl;
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    testST.erase(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Splay tree erase: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    testM.erase(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Map erase: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
+            << std::endl;
+
+}
+
+int main() {
+  runTests();
+  runPerfTests();
+
   return 0;
 }
