@@ -2,6 +2,7 @@
 
 
 // vector copies its elements in advance. it stores a new buffer all the time
+// Θ(1) in the assumption that memory allocation complexity is O(1)
 template <typename T>
 class Vec {
  public:

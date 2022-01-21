@@ -1,4 +1,4 @@
-# Algorithms-and-Data-structures
+# Algorithms and Data structures
 
 ## Following stuff is already implemented:
 
@@ -25,6 +25,8 @@
 1. Binary heap [(wiki)](https://en.wikipedia.org/wiki/Binary_heap)
 2. Binomial heap [(wiki)](https://en.wikipedia.org/wiki/Binomial_heap)
 3. Pairing heap [(wiki)](https://en.wikipedia.org/wiki/Pairing_heap)
+4. Leftist heap [(wiki)](https://en.wikipedia.org/wiki/Leftist_tree)
+5. Skew heap [(wiki)](https://en.wikipedia.org/wiki/Skew_heap)
 
 ### Search Trees:
 1. van Emde Boas tree [(wiki)](https://en.wikipedia.org/wiki/Van_Emde_Boas_tree)
