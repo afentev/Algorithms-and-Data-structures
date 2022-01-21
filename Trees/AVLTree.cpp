@@ -8,11 +8,10 @@ template<typename K, typename V>
 class AVL {
  private:
   struct Node {
-    Node(const K& k, const V& v) : left(nullptr), right(nullptr), parent(nullptr), key(k), val(v) {}
+    Node(const K& k, const V& v) : left(nullptr), right(nullptr), key(k), val(v) {}
 
     Node* left;
     Node* right;
-    Node* parent;
     size_t height;
     K key;
     V val;
@@ -154,8 +153,6 @@ class AVL {
     return {vertex, std::get<1>(result), false};
   }
 
- public:
-
  private:
   Node* root;
 
@@ -195,6 +192,7 @@ class AVL {
     return lookup(key);
   }
 };
+
 
 void runTests() {
   AVL<int, int> t;
