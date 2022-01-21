@@ -2,7 +2,6 @@
 #include <vector>
 #include <cassert>
 #include <map>
-#include <random>
 #include <chrono>
 
 
@@ -230,9 +229,6 @@ int main() {
   SplayTree<int, int> t;
   std::map<int, int> m;
 
-  std::random_device rd;
-  std::mt19937 eng(rd());
-
   int N = 1e6;
   std::vector<int> d;
   d.reserve(N);
@@ -249,7 +245,6 @@ int main() {
       d.push_back(x.first);
     }
   }
-  size_t it = 0;
   for (int x: d) {
     m.erase(x);
     t.erase(x);

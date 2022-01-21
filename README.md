@@ -31,6 +31,7 @@
 ### Search Trees:
 1. van Emde Boas tree [(wiki)](https://en.wikipedia.org/wiki/Van_Emde_Boas_tree)
 2. Splay Tree [(wiki)](https://en.wikipedia.org/wiki/Splay_tree)
+3. AVL Tree [(wiki)](https://en.wikipedia.org/wiki/AVL_tree)
 
 ### Data Structures for RMQ and similar problems:
 1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
