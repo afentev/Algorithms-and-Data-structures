@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <iomanip>
 
 /*
  * Long arithmetics with support of large integers (BigInteger) and rationals (Rational) numbers
@@ -771,4 +772,22 @@ bool operator>= (const Rational& left, const Rational& right) {
 
 bool operator!= (const Rational& left, const Rational& right) {
   return !(left == right);
+}
+
+
+int main() {
+  BigInteger first = 2398579859842375982739857398475983274598275489275987_bi;
+  BigInteger second("98374987349872394729384798274598279857285739427598274589247359");
+  BigInteger third = 9238959824758923754978265782329385769573259276578284756827345827658726354872_bi;
+  BigInteger c = -first * second;
+  std::cout << c << std::endl;
+  std::cout << c / third << std::endl;
+  std::cout << c % third << std::endl << std::endl;
+
+  Rational frac1(8203759872459872985792357392_bi, 389742987598275987598427598724_bi);
+  Rational frac2(38479872198479857928_bi, 98763097320958709235976456_bi);
+  Rational div = -frac1 / frac2;
+  std::cout << div.toString() << std::endl;
+  std::cout << div.asDecimal(30) << std::endl;
+  std::cout << std::setprecision(20) << static_cast<double>(div) << std::endl;
 }

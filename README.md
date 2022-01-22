@@ -37,8 +37,11 @@
 1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
 
 ### Algorithms on graphs:
+1. Topological sort [(wiki)](https://en.wikipedia.org/wiki/Topological_sorting)
+
 #### Shortest paths:
 1. Dijkstra's algorithm [(wiki)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+2. Bellman-Ford algorithm [(wiki)](https://en.wikipedia.org/wiki/Bellman–Ford_algorithm)
 
 ### Other data structures:
 1. Persistent stack
