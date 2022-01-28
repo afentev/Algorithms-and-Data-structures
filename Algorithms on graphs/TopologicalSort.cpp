@@ -35,8 +35,7 @@ void topsort() {
   }
 }
 
-// solution for https://codeforces.com/group/QmrArgR1Jp/contest/302599/problem/B
-// Find the shortest distance from the first vertex to all others.
+// solution for https://codeforces.com/group/QmrArgR1Jp/contest/298379/problem/A
 int main() {
   std::cin >> n >> m;
   g.resize(n);
