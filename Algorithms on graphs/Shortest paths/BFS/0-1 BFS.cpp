@@ -28,6 +28,7 @@ void bfs01(int vertex) {
   }
 }
 
+// solution for https://www.eolymp.com/ru/problems/4033
 int main() {
   int n, start, finish;
   std::cin >> n >> start >> finish;
