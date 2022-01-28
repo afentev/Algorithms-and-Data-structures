@@ -42,6 +42,9 @@
 #### Shortest paths:
 1. Dijkstra's algorithm [(wiki)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
 2. Bellman-Ford algorithm [(wiki)](https://en.wikipedia.org/wiki/Bellman–Ford_algorithm)
+3. 0-1 BFS [(cp-algorithms)](https://cp-algorithms.com/graph/01_bfs.html)
+4. 1-k BFS [(lksh)](https://archive.lksh.ru/2018/august/B'/notes/07.pdf)
+5. Dial's algorithm (1-k BFS) [(codeforces)](https://codeforces.com/blog/entry/88408?locale=en)
 
 ### Other data structures:
 1. Persistent stack
