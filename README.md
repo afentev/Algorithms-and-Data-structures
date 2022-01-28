@@ -39,6 +39,7 @@
 
 ### Algorithms on graphs:
 1. Topological sort [(wiki)](https://en.wikipedia.org/wiki/Topological_sorting)
+2. Counting the number of triangles in a graph [(cs.stanford.edu)](https://cs.stanford.edu/~rishig/courses/ref/l1.pdf)
 
 #### Shortest paths:
 1. Dijkstra's algorithm [(wiki)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
