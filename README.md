@@ -33,6 +33,7 @@
 2. Splay Tree [(wiki)](https://en.wikipedia.org/wiki/Splay_tree)
 3. AVL Tree [(wiki)](https://en.wikipedia.org/wiki/AVL_tree)
 4. B-tree [(wiki)](https://en.wikipedia.org/wiki/B-tree)
+5. Skip list [(wiki)](https://en.wikipedia.org/wiki/Skip_list)
 
 ### Data Structures for RMQ and similar problems:
 1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
