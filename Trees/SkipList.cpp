@@ -1,13 +1,15 @@
 #include <iostream>
 #include <vector>
+#include <random>
+#include <chrono>
 #include <map>
+#include <cassert>
 
-const int u = INT32_MAX / 2.718281828459045;
+std::random_device rd;
+std::mt19937 mt(rd());
+std::uniform_int_distribution<int32_t> dist(0, INT32_MAX);
 
-bool coinFlip() {
-  return rand() < u;
-//  return rand() % 2;
-}
+const int u = static_cast<const int>(INT32_MAX / 2.718281828459045l);
 
 
 template <typename K, typename V, K minima, K maxima>
@@ -28,9 +30,9 @@ class SkipList {
     size_t width = 1;
   };
 
-  Node* end = new Node(maxima);
-  Node* begin = new Node(minima, V(), end, nullptr, 0);
-  size_t size = 0;
+  Node* end;
+  Node* begin;
+  size_t size_ = 0;
 
  private:
   std::pair<bool, Node*> insert(const K& key, const V& val, Node* cur) {
@@ -62,9 +64,31 @@ class SkipList {
     }
   }
 
+  static bool coinFlip() {
+    return dist(mt) < u;
+  }
+
  public:
+  SkipList() {
+    end = new Node(maxima);
+    begin = new Node(minima, V(), end, nullptr, 0);
+  }
+
+  ~SkipList() {
+    Node* cur = begin;
+    while (cur != nullptr) {
+      Node* next = cur->bot;
+      while (cur != nullptr) {
+        Node* toDelete = cur;
+        cur = cur->next;
+        delete toDelete;
+      }
+      cur = next;
+    }
+  }
+
   void insert(const K& key, const V& val) {
-    size++;
+    size_++;
     auto newLevel = insert(key, val, begin);
     if (newLevel.first) {
       Node* newEnd = new Node(maxima, V(), nullptr, end, end->width);
@@ -77,7 +101,7 @@ class SkipList {
         node->width += ptr->width;
       }
 
-      newEnd->width = size - node->width + 1;
+      newEnd->width = size_ - node->width + 1;
 
       begin = newBegin;
       end = newEnd;
@@ -85,7 +109,7 @@ class SkipList {
   }
 
   void erase(const K& key) {
-    size--;
+    size_--;
     Node* cur = begin;
     while (cur != nullptr) {
       while (cur->next->key != maxima && key > cur->next->key) {
@@ -99,7 +123,7 @@ class SkipList {
       } else {
         --cur->next->width;
       }
-      if (cur->key == minima && cur->next->key == maxima) {  // erase empty level
+      if (cur == begin && cur->next == end && begin->bot != nullptr) {  // erase empty level
         begin = cur->bot;
         end = cur->next->bot;
         Node* toDelete = cur;
@@ -143,7 +167,12 @@ class SkipList {
     }
     return cur->val;
   }
+
+  size_t size() {
+    return size_;
+  }
 };
+
 
 void runTests() {
   SkipList<int, int, INT32_MIN, INT32_MAX> t;
