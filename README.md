@@ -16,6 +16,7 @@
 2. Quick sort [(wiki)](https://en.wikipedia.org/wiki/Quicksort)
 
 #### Non-comparative sorting algorithms
+1. Radix sort [(wiki)](https://en.wikipedia.org/wiki/Radix_sort)
 
 #### Other algorithms related to sortings
 1. Quickselect *(selection algorithm)* [(wiki)](https://en.wikipedia.org/wiki/Quickselect)
