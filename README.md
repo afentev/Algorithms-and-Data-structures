@@ -35,6 +35,7 @@
 3. AVL Tree [(wiki)](https://en.wikipedia.org/wiki/AVL_tree)
 4. B-tree [(wiki)](https://en.wikipedia.org/wiki/B-tree)
 5. Skip list [(wiki)](https://en.wikipedia.org/wiki/Skip_list)
+6. X-fast trie [(wiki)](https://en.wikipedia.org/wiki/X-fast_trie)
 
 ### Data Structures for RMQ and similar problems:
 1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
