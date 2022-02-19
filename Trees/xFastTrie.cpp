@@ -9,18 +9,20 @@
 
 template <typename Val>
 struct Node {
-  Node() = default;
-  Node(const typename std::list<Val>::iterator& v): max(v), min(v) {}
+  using listIter = typename std::list<Val>::iterator;
 
-  typename std::list<Val>::iterator min;
-  typename std::list<Val>::iterator max;
+  Node() = default;
+  Node(const listIter & v): max(v), min(v) {}
+
+  listIter min;
+  listIter max;
 };
 
 template <size_t w, typename Val>
 class xFastTrie {
   using Container = __gnu_pbds::gp_hash_table<Val, Node<Val>>;
 //  using Container = std::unordered_map<Val, Node<Val>>;  // also possible but slower
-  using listIter = typename std::list<Val>::iterator;
+  using listIter = typename Node<Val>::listIter;
 
  private:
   int getFastPrefix(const Val& v) {
@@ -39,49 +41,43 @@ class xFastTrie {
 
  public:
   xFastTrie(const Val& negInf, const Val& posInf) {
-    for (int i = 0; i < w; ++i) {
-      mapper.emplace_back();
-    }
+    mapper.resize(w);
     list.push_back(negInf);
     list.push_back(posInf);
   }
 
   void insert(const Val& v) {
     listIter it;
-    for (int level = 0; level < w; ++level) {
-      Val cur = v >> (w - level - 1);
-      if (mapper[level].find(cur) == mapper[level].end()) {
-        Val prev = cur >> 1;
-        if (level == 0) {
-          if (cur & 1) {
-            it = std::prev(list.end());
-          } else {
-            it = std::next(list.begin());
-          }
-        } else if (cur & 1) {
-          it = std::next(mapper[level - 1][prev].max);
-        } else {
-          it = mapper[level - 1][prev].min;
-        }
-        it = list.insert(it, v);
-
-        for (int levelDown = level; levelDown < w; ++levelDown) {
-          mapper[levelDown][v >> (w - levelDown - 1)] = Node<Val>(it);
-        }
-
-        // step up and update min and max
-        for (int levelUp = level; levelUp >= 0; --levelUp) {
-          listIter& min = mapper[levelUp][cur].min;
-          listIter& max = mapper[levelUp][cur].max;
-          if (v < *min) {
-            min = it;
-          } else if (v > *max) {
-            max = it;
-          }
-          cur >>= 1;
-        }
-        break;
+    int level = getFastPrefix(v) + 1;
+    Val cur = v >> (w - level - 1);
+    if (level == 0) {
+      if (cur & 1) {
+        it = std::prev(list.end());
+      } else {
+        it = std::next(list.begin());
       }
+    } else if (cur & 1) {
+      it = std::next(mapper[level - 1][cur >> 1].max);
+    } else {
+      it = mapper[level - 1][cur >> 1].min;
+    }
+    it = list.insert(it, v);
+
+    // step down and insert
+    for (int levelDown = level; levelDown < w; ++levelDown) {
+      mapper[levelDown][v >> (w - levelDown - 1)] = Node<Val>(it);
+    }
+
+    // step up and update min and max
+    for (int levelUp = level; levelUp >= 0; --levelUp) {
+      listIter& min = mapper[levelUp][cur].min;
+      listIter& max = mapper[levelUp][cur].max;
+      if (v < *min) {
+        min = it;
+      } else if (v > *max) {
+        max = it;
+      }
+      cur >>= 1;
     }
   }
 
