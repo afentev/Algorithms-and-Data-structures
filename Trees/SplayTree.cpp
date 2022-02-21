@@ -8,7 +8,7 @@
 template<typename K, typename V>
 class SplayTree {
   struct Node {
-    Node(const K& key = K(), const V& val = V()) : left(nullptr), right(nullptr), parent(nullptr),
+    Node(const K& key, const V& val) : left(nullptr), right(nullptr), parent(nullptr),
                                                    key(key), val(val) {}
 
     Node* left, *right, *parent;
@@ -83,41 +83,18 @@ class SplayTree {
   }
 
   void remover(Node* vertex) {
-    if (vertex == nullptr) return;
-    remover(vertex->left);
-    remover(vertex->right);
-    delete vertex;
-  }
-
-  static Node* copy(Node*& to, Node* from) {
-    if (from == nullptr) {
-      to = nullptr;
-      return to;
+    if (vertex != nullptr) {
+      remover(vertex->left);
+      remover(vertex->right);
+      delete vertex;
     }
-    to = new Node;
-    to->key = from->key;
-    to->val = from->val;
-
-    to->left = copy(to->left, from->left);
-    to->right = copy(to->right, from->right);
-
-    if (to->left != nullptr) {
-      to->left->parent = to;
-    }
-    if (to->right != nullptr) {
-      to->right->parent = to;
-    }
-
-    return to;
   }
 
  private:
   Node* root;
 
  public:
-  SplayTree() {
-    root = nullptr;
-  }
+  SplayTree(): root(nullptr) {}
 
   ~SplayTree() {
     remover(root);
@@ -169,7 +146,12 @@ class SplayTree {
       minima->left->parent = minima;
     }
 
-    delete target;
+    if (target == root) {
+      delete target;
+      root = nullptr;
+    } else {
+      delete target;
+    }
   }
 
   Node* find(const K& key) {
@@ -184,19 +166,6 @@ class SplayTree {
       }
     }
     return nullptr;
-  }
-
-  V& lookup(const K& key) {
-    Node* vertex = root;
-    while (true) {
-      if (vertex->key < key) {
-        vertex = vertex->right;
-      } else if (vertex->key > key) {
-        vertex = vertex->left;
-      } else {
-        return vertex->val;
-      }
-    }
   }
 
   V& operator[](const K& key) {
@@ -234,11 +203,6 @@ class SplayTree {
   V& operator[](const K& key) const {
     return lookup(key);
   }
-
-  SplayTree& operator=(const SplayTree& other) {
-    copy(root, other.root);
-    return *this;
-  }
 };
 
 
@@ -246,7 +210,7 @@ void runTests() {
   SplayTree<int, int> t;
   std::map<int, int> m;
 
-  int N = 1e6;
+  int N = 1e5;
   std::vector<int> d, r;
   d.reserve(N);
 
@@ -307,7 +271,7 @@ void runPerfTests() {
 
   begin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < N; ++i) {
-    volatile int val = testST.lookup(keys[i]);
+    volatile int val = testST[keys[i]];
   }
   end = std::chrono::high_resolution_clock::now();
   std::cout << "Splay tree lookup: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()

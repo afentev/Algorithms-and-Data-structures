@@ -2,6 +2,7 @@
 #include <vector>
 #include <chrono>
 #include <map>
+#include <cassert>
 
 
 template<typename K, typename V>
