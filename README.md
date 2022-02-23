@@ -52,6 +52,9 @@
 4. 1-k BFS [(lksh)](https://archive.lksh.ru/2018/august/B'/notes/07.pdf)
 5. Dial's algorithm (1-k BFS) [(codeforces)](https://codeforces.com/blog/entry/88408?locale=en)
 
+#### Algorithms for MST:
+1. Prim's algorithm [(wiki)](https://en.wikipedia.org/wiki/Prim%27s_algorithm)
+
 ### Other data structures:
 1. Persistent stack
 2. Queue with minimum 
