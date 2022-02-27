@@ -4,8 +4,8 @@
 
 #include <iostream>
 #include <vector>
-#include <random>
 #include <chrono>
+#include <set>
 
 
 // this constexpr are needed for const template declarations   ¯\_(ツ)_/¯
@@ -18,52 +18,13 @@ constexpr static uint8_t const ofSize[33] {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6
 constexpr const uint8_t* ofPtr = &ofSize[0];
 
 
-template <uint8_t sz>
-class Tree;
-
 // this current implementation supports only 32-bit numbers (it seems easy to be changed)
 //#pragma pack(1)
-template <uint8_t size>
-class vEB {
- public:
-  vEB(): tree(Tree<size>()) {}
-
-  void insert(int32_t el) {
-    tree.insert(el);
-  }
-
-  void remove(int32_t el) {
-    tree.remove(el);
-  }
-
-  int32_t next(int32_t el) {
-    return tree.next(el);
-  }
-
-  int32_t prev(int32_t el) {
-    return tree.prev(el);
-  }
-
-  [[nodiscard]] int32_t getMin() const {
-    return tree.getMin();
-  }
-
-  [[nodiscard]] int32_t getMax() const {
-    return tree.getMax();
-  }
-
-  [[nodiscard]] bool isEmpty() const {
-    return tree.isEmpty();
-  }
-
- private:
-  Tree<size> tree;
-};
 
 template <uint8_t sz>
-class Tree {
+class vEB {
  public:
-  explicit Tree(): min(-1), max(-2), of2(ofPtr[sz]), l2(1u << of2) {  // Receives k from [0; 2^k)
+  explicit vEB(): min(-1), max(-2), of2(ofPtr[sz]), l2(1u << of2) {  // Receives k from [0; 2^k)
     uint8_t a = aSize[sz];
     /*
      * uint8_t a = 6;
@@ -75,7 +36,7 @@ class Tree {
      * with that algorithm all nodes will perfectly converge on low-depth into bitsets which size is 2^6=64
      * this is done with 2 purposes: firstly, this approach uses less memory than taking the square roots method or
      * simply bit shifts. the problem with these 2 methods is a big number of sparse nodes and weak efficiency in
-     * convergence into bitsets. secondly, reducing the number of nodes in tree speeds up tree construction
+     * convergence into bitsets. secondly, reducing the number of nodes in vEB speeds up vEB construction
      * ~5 times (very approximately).
      */
     uint32_t l1 = 1 << a;
@@ -85,9 +46,9 @@ class Tree {
 
     children.reserve(l1);
     for (int i = 0; i < l1; ++i) {
-      children.push_back(Tree<*(ofPtr + sz)>());
+      children.push_back(vEB<*(ofPtr + sz)>());
     }
-    used = new Tree<*(aPtr + sz)>;
+    used = new vEB<*(aPtr + sz)>;
   }
 
   void insert(int32_t el) {
@@ -183,7 +144,7 @@ class Tree {
 
     if (!children[child].isEmpty()) {
       int32_t attempt = children[child].getMax();
-      if (attempt >= index) {  // we could find next in this subtree, do that
+      if (attempt >= index) {  // we could find next in this subvEB, do that
         int32_t res = children[child].next(index);
         return res + l2 * child;
       }
@@ -211,7 +172,7 @@ class Tree {
 
     if (!children[child].isEmpty()) {
       int32_t attempt = children[child].getMin();
-      if (attempt <= index) {  // we could find prev in this subtree, do that
+      if (attempt <= index) {  // we could find prev in this subvEB, do that
         int32_t res = children[child].prev(index);
         return res + l2 * child;
       }
@@ -254,8 +215,8 @@ class Tree {
     return used == nullptr || used->isEmpty();
   }
 
-  std::vector<Tree<*(ofPtr + sz)>> children;
-  Tree<*(aPtr + sz)>* used;
+  std::vector<vEB<*(ofPtr + sz)>> children;
+  vEB<*(aPtr + sz)>* used;
   int32_t min;
   int32_t max;
   const uint8_t of2;  // fast lo(x) and hi(x)
@@ -263,9 +224,9 @@ class Tree {
 };
 
 template <>  // 2^6=64 - elements are in bitset
-class Tree<6> {
+class vEB<6> {
  public:
-  Tree() {
+  vEB() {
     bitset = 0ull;
   }
 
@@ -279,7 +240,7 @@ class Tree<6> {
 
   [[nodiscard]] int32_t next(int32_t el) const {
     uint64_t tmp = (bitset << el);
-    if (tmp == 0) {
+    if (tmp == 0 || el == 64) {
       return -1;
     }
     return el + __builtin_clzll(tmp);
@@ -287,7 +248,7 @@ class Tree<6> {
 
   [[nodiscard]] int32_t prev(int32_t el) const {
     uint64_t tmp = (bitset >> (63 - el));
-    if (tmp == 0) {
+    if (tmp == 0 || el == -1) {
       return -1;
     }
     return el - __builtin_ctzll(tmp);
@@ -310,9 +271,9 @@ class Tree<6> {
 };
 
 template <>
-class Tree<5> {
+class vEB<5> {
  public:
-  Tree() {
+  vEB() {
     bitset = 0u;
   }
 
@@ -326,7 +287,7 @@ class Tree<5> {
 
   [[nodiscard]] int32_t next(int32_t el) const {
     uint64_t tmp = (bitset << el);
-    if (tmp == 0) {
+    if (tmp == 0 || el == 32) {
       return -1;
     }
     return el + __builtin_clz(tmp);
@@ -334,7 +295,7 @@ class Tree<5> {
 
   [[nodiscard]] int32_t prev(int32_t el) const {
     uint64_t tmp = (bitset >> (31 - el));
-    if (tmp == 0) {
+    if (tmp == 0 || el == -1) {
       return -1;
     }
     return el - __builtin_ctz(tmp);
@@ -357,9 +318,9 @@ class Tree<5> {
 };
 
 template <>
-class Tree<4> {
+class vEB<4> {
  public:
-  Tree() {
+  vEB() {
     bitset = 0u;
   }
 
@@ -373,7 +334,7 @@ class Tree<4> {
 
   [[nodiscard]] int32_t next(int32_t el) const {
     uint32_t tmp = (bitset << (el + 16));
-    if (tmp == 0) {
+    if (tmp == 0 || el == 16) {
       return -1;
     }
     return el + __builtin_clz(tmp);
@@ -381,7 +342,7 @@ class Tree<4> {
 
   [[nodiscard]] int32_t prev(int32_t el) const {
     uint32_t tmp = (bitset >> (15 - el));
-    if (tmp == 0) {
+    if (tmp == 0 || el == -1) {
       return -1;
     }
     return el - __builtin_ctz(tmp);
@@ -404,9 +365,9 @@ class Tree<4> {
 };
 
 template <>
-class Tree<3> {
+class vEB<3> {
  public:
-  Tree() {
+  vEB() {
     bitset = 0u;
   }
 
@@ -420,7 +381,7 @@ class Tree<3> {
 
   [[nodiscard]] int32_t next(int32_t el) const {
     uint32_t tmp = (bitset << (el + 24));
-    if (tmp == 0) {
+    if (tmp == 0 || el == 8) {
       return -1;
     }
     return el + __builtin_clz(tmp);
@@ -428,7 +389,7 @@ class Tree<3> {
 
   [[nodiscard]] int32_t prev(int32_t el) const {
     uint32_t tmp = (bitset >> (7 - el));
-    if (tmp == 0) {
+    if (tmp == 0 || el == -1) {
       return -1;
     }
     return el - __builtin_ctz(tmp);
@@ -450,45 +411,165 @@ class Tree<3> {
   uint8_t bitset;
 };
 
-int main() {
-  int n = 1e6;
-  const int max_K = 30;  // [0; 2^30)
 
-  std::random_device rd;
-  std::mt19937 g(rd());
-  std::vector<int> x(n);
+void runTests() {
+  vEB<30> t;
+  std::set<int> m;
 
-  for (int i = 0; i < n; ++i) {
-    x[i] = i;
+  int N = 1e5;
+  std::vector<int> d, r;
+  d.reserve(N);
+
+  for (int i = 0; i < N; ++i) {
+    int k = rand() % (1ull << 30);
+    int v = rand() % (1ull << 30);
+    t.insert(k);
+    m.insert(k);
+    r.push_back(k);
   }
-  std::shuffle(x.begin(), x.end(), g);
+
+  for (auto x: r) {
+    assert((t.next(x) == x) == m.contains(x));
+    if (rand() % 2 == 1) {
+      d.push_back(x);
+    }
+  }
+
+  for (int x: d) {
+    m.erase(x);
+    t.remove(x);
+  }
+
+  for (auto x: r) {
+    assert(m.contains(x) == (t.next(x) == x));
+  }
+
+  for (auto x: r) {
+    auto it = m.lower_bound(x);
+    uint32_t pred, suc;
+    if (it == m.begin()) {
+      pred = -1;
+      suc = *it;
+    } else if (it == m.end()) {
+      suc = UINT32_MAX;
+      pred = *std::prev(it);
+    } else {
+      pred = *std::prev(it);
+      suc = *it;
+    }
+    if (x == *it) {
+      pred = x;
+      suc = x;
+    }
+    assert(suc == t.next(x));
+    assert(pred == t.prev(x));
+  }
+
+  std::cout << "All tests passed!\n" << std::endl;
+}
+
+
+void runPerfTests() {
+  const int N = 1e6;
 
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-  vEB<max_K> t;
-
-  std::chrono::steady_clock::time_point allocate = std::chrono::steady_clock::now();
-  std::cout << "Allocation = " << std::chrono::duration_cast<std::chrono::milliseconds>(allocate - begin).count()
-            << " [ms]" << std::endl;
-
-  for (int i = 0; i < n; ++i) {
-    t.insert(x[i]);
-  }
-
-  std::chrono::steady_clock::time_point insert = std::chrono::steady_clock::now();
-  std::cout << "Insertion  = " << std::chrono::duration_cast<std::chrono::milliseconds>(insert - allocate).count()
-            << " [ms]" << std::endl;
-
-  for (int i = 0; i < n; ++i) {
-    t.remove(t.getMin());
-  }
-
+  vEB<30> vEB;
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-  std::cout << "Remove     = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - insert).count() << " [ms]"
+
+  std::cout << "vEB<30> allocation: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::steady_clock::now();
+  std::set<int> testM;
+  end = std::chrono::steady_clock::now();
+  std::cout << "set allocation: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms\n" << std::endl;
+
+  std::vector<int> keys, values;
+  keys.reserve(N);
+  values.reserve(N);
+  for (int i = 0; i < N; ++i) {
+    keys.push_back(rand() % (1ull << 30));
+    values.push_back(rand() % (1ull << 30));
+  }
+
+  // -----------------------------------------------------------------------------------------------------------------
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    vEB.insert(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "vEB<30> insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    testM.insert(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Set insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
             << std::endl;
-  std::cout << "Total      = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " [ms]"
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile bool val = (vEB.next(keys[i]) == keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "vEB<30> contains: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile bool val = testM.contains(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Set contains: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
             << std::endl;
-  std::cin >> n;
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile auto val = vEB.next(values[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "vEB<30> successor: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    volatile auto val = testM.find(values[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Set successor: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
+            << std::endl;
+
+  // -----------------------------------------------------------------------------------------------------------------
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    vEB.remove(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "vEB<30> erase: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+            << "ms" << std::endl;
+
+  begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < N; ++i) {
+    testM.erase(keys[i]);
+  }
+  end = std::chrono::high_resolution_clock::now();
+  std::cout << "Set erase: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
+            << std::endl;
+
+}
+
+
+int main() {
+  runTests();
+  runPerfTests();
 
   return 0;
 }
