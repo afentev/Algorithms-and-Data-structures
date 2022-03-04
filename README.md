@@ -55,6 +55,9 @@
 #### Algorithms for MST:
 1. Prim's algorithm [(wiki)](https://en.wikipedia.org/wiki/Prim%27s_algorithm)
 
+#### LCA:
+1. Binary Lifting [(cp-algorithms)](https://cp-algorithms.com/graph/lca_binary_lifting.html)
+
 ### Other data structures:
 1. Persistent stack
 2. Queue with minimum 
