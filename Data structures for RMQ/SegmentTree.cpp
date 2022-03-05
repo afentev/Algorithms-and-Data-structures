@@ -12,7 +12,7 @@ struct SegmentTree {
 
   SegmentTree(const std::vector<int>& a) {
     n = a.size();
-    t.resize(n * 4, 0);
+    t.resize(n << 2, 0);
     build(a, 1, 0, n - 1);
   }
 
@@ -20,14 +20,14 @@ struct SegmentTree {
     if (rSubSeg == lSubSeg == 1) {
       t[i] = a[lSubSeg];
     } else {
-      int mid = (lSubSeg + rSubSeg) / 2;
-      build(a, 2 * i, lSubSeg, mid);
-      build(a, 2 * i + 1, mid + 1, rSubSeg);
-      t[i] = op(t[2 * i], t[2 * i + 1]);
+      int mid = (lSubSeg + rSubSeg) >> 1;
+      build(a, i << 1, lSubSeg, mid);
+      build(a, (i << 1) | 1, mid + 1, rSubSeg);
+      t[i] = op(t[i << 1], t[(i << 1) | 1]);
     }
   }
 
-  int query(int l, int r) {
+  int query(int l, int r) {  // [l; r]
     return query(1, 0, n - 1, l, r);
   }
 
@@ -38,29 +38,29 @@ struct SegmentTree {
     if (lQuery <= lSubSeg && rSubSeg <= rQuery) {
       return t[i];
     }
-    int mid = (lSubSeg + rSubSeg) / 2;
-    int left = query(2 * i, lSubSeg, mid, lQuery, rQuery);
-    int right = query(2 * i + 1, mid + 1, rSubSeg, lQuery, rQuery);
+    int mid = (lSubSeg + rSubSeg) >> 1;
+    int left = query(i << 1, lSubSeg, mid, lQuery, rQuery);
+    int right = query((i << 1) | 1, mid + 1, rSubSeg, lQuery, rQuery);
 
     return op(left, right);
   }
 
-  void update(int i, int newVal) {
-    update(1, 0, n - 1, i, newVal);
+  void update(int pos, int newVal) {
+    update(1, 0, n - 1, pos, newVal);
   }
 
-  void update(int i, int lSubSeg, int rSubSeg, int index, int newVal) {
+  void update(int i, int lSubSeg, int rSubSeg, int pos, int newVal) {
     if (lSubSeg == rSubSeg) {
       t[i] = newVal;
     } else {
-      int mid = (lSubSeg + rSubSeg) / 2;
-      if (index <= mid) {
-        update(2 * i, lSubSeg, mid, index, newVal);
+      int mid = (lSubSeg + rSubSeg) >> 1;
+      if (pos <= mid) {
+        update(i << 1, lSubSeg, mid, pos, newVal);
       } else {
-        update(2 * i + 1, mid + 1, rSubSeg, index, newVal);
+        update((i << 1) | 1, mid + 1, rSubSeg, pos, newVal);
       }
 
-      t[i] = op(t[2 * i], t[2 * i + 1]);
+      t[i] = op(t[i << 1], t[(i << 1) | 1]);
     }
   }
 
@@ -72,7 +72,6 @@ struct SegmentTree {
 // solution for https://codeforces.com/group/QmrArgR1Jp/contest/269449/problem/B
 int32_t main() {
   std::cin.tie(nullptr);
-  std::cout.tie(nullptr);
   std::ios_base::sync_with_stdio(false);
 
   int n;
