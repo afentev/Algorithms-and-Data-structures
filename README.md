@@ -39,7 +39,8 @@
 7. Y-fast trie [(wiki)](https://en.wikipedia.org/wiki/Y-fast_trie)
 
 ### Data Structures for RMQ and similar problems:
-1. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
+1. Segment tree [(wiki)](https://en.wikipedia.org/wiki/Segment_tree)
+2. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
 
 ### Algorithms on graphs:
 1. Topological sort [(wiki)](https://en.wikipedia.org/wiki/Topological_sorting)
