@@ -11,7 +11,7 @@ struct SegmentTree {
   }
 
   SegmentTree(const std::vector<int>& a) {
-    n = getPower(a.size());
+    n = a.size();
     t.resize(n << 1, 0);
     build(a);
   }
@@ -50,14 +50,6 @@ struct SegmentTree {
       t[pos] = op(t[pos << 1], t[(pos << 1) | 1]);
       pos >>= 1;
     }
-  }
-
-  static int getPower(int n) {
-    int ans = 1;
-    while (ans < n) {
-      ans <<= 1;
-    }
-    return ans;
   }
 
   std::vector<int> t;
