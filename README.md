@@ -42,7 +42,8 @@
 1. Segment tree [(wiki)](https://en.wikipedia.org/wiki/Segment_tree)
 2. Bottom-up Segment tree (aka ZKW Segment tree) [(codeforces)](https://codeforces.com/blog/entry/18051)
 3. Fenwick tree [(wiki)](https://en.wikipedia.org/wiki/Fenwick_tree)
-4. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
+4. Sparse table [(cp-algorithms)](https://cp-algorithms.com/data_structures/sparse-table.html)
+5. Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
 
 ### Algorithms on graphs:
 1. Topological sort [(wiki)](https://en.wikipedia.org/wiki/Topological_sorting)
