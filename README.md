@@ -45,6 +45,7 @@
  - Sparse table [(cp-algorithms)](https://cp-algorithms.com/data_structures/sparse-table.html)
  - Sparse table with binary lifting [(peltorator)](https://peltorator.ru/posts/sparse_table/)
  - Disjoint Sparse Table [(codechef)](https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
+ - Sqrt decomposition [(cp-algorithms)](https://cp-algorithms.com/data_structures/sqrt_decomposition.html)
 
 ## Algorithms on graphs:
  - Topological sort [(wiki)](https://en.wikipedia.org/wiki/Topological_sorting)
