@@ -4,6 +4,9 @@
 
 ## Math algorithms
  - Long arithmetic [(cp-algorithms)](https://cp-algorithms.com/algebra/big-integer.html)
+### Prime numbers and factorization
+ - Sieve of Eratosthenes [(wiki)](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
+ - Sieve of Eratosthenes with linear complexity (aka Euler's sieve) [(wiki)](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Euler's_sieve)
 
 ## Sorting algorithms
 ### Sortings with _O(n²)_ average-case perfomance
