@@ -11,7 +11,7 @@ void eratosthenes(size_t n) {
       primes.push_back(i);
       divisors[i] = i;
     }
-    for (size_t j = 0; j < primes.size() && primes[j] <= divisors[i] && primes[j] * divisors[i] <= n; ++j) {
+    for (size_t j = 0; j < primes.size() && primes[j] <= divisors[i] && primes[j] * i <= n; ++j) {
       divisors[primes[j] * i] = primes[j];
     }
   }
