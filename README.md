@@ -64,6 +64,7 @@
 
 ### Algorithms for MST:
  - Prim's algorithm [(wiki)](https://en.wikipedia.org/wiki/Prim%27s_algorithm)
+ - Kruskal's algorithm [(wiki)](https://en.wikipedia.org/wiki/Kruskal's_algorithm)
 
 ### LCA:
  - Binary Lifting [(cp-algorithms)](https://cp-algorithms.com/graph/lca_binary_lifting.html)
