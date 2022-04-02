@@ -69,6 +69,7 @@
  - Binary Lifting [(cp-algorithms)](https://cp-algorithms.com/graph/lca_binary_lifting.html)
 
 ## Other data structures:
+ - Disjoint set union (Union find) [(cp-algorithms)](https://cp-algorithms.com/data_structures/disjoint_set_union.html)
  - Persistent stack
  - Queue with minimum 
  - Hashed array tree [(wiki)](https://en.wikipedia.org/wiki/Hashed_array_tree)
