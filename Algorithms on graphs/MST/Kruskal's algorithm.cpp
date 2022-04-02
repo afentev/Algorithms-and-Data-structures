@@ -31,7 +31,7 @@ struct DSU {
         swap(v, u);
       }
       parent[v] = u;
-      size[v] += size[u];
+      size[u] += size[v];
     }
   }
 
