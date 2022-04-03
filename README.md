@@ -10,17 +10,12 @@
  - Pollard's rho algorithm [(wiki)](https://en.wikipedia.org/wiki/Pollard%27s_rho_algorithm)
 
 ## Sorting algorithms
-### Sortings with _O(n²)_ average-case perfomance
+ - Radix sort [(wiki)](https://en.wikipedia.org/wiki/Radix_sort)
+ - Merge sort [(wiki)](https://en.wikipedia.org/wiki/Merge_sort)
+ - Quick sort [(wiki)](https://en.wikipedia.org/wiki/Quicksort)
  - Insertion sort [(wiki)](https://en.wikipedia.org/wiki/Insertion_sort)
  - Selection sort [(wiki)](https://en.wikipedia.org/wiki/Selection_sort)
  - Bubble sort [(wiki)](https://en.wikipedia.org/wiki/Bubble_sort)
-
-### Sortings with _O(n ∙ log(n))_ average-case perfomance
- - Merge sort [(wiki)](https://en.wikipedia.org/wiki/Merge_sort)
- - Quick sort [(wiki)](https://en.wikipedia.org/wiki/Quicksort)
-
-### Non-comparative sorting algorithms
- - Radix sort [(wiki)](https://en.wikipedia.org/wiki/Radix_sort)
 
 ### Other algorithms related to sortings
  - Quickselect *(selection algorithm)* [(wiki)](https://en.wikipedia.org/wiki/Quickselect)
