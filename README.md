@@ -56,6 +56,7 @@
  - Counting the number of triangles in a graph [(cs.stanford.edu)](https://cs.stanford.edu/~rishig/courses/ref/l1.pdf)
 
 ### Shortest paths:
+ - Floyd-Warshall algorithm [(wiki)](https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm)
  - Dijkstra's algorithm [(wiki)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
  - Bellman-Ford algorithm [(wiki)](https://en.wikipedia.org/wiki/Bellman–Ford_algorithm)
  - Shortest Path Faster Algorithm [(wiki)](https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm) 
