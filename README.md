@@ -59,6 +59,7 @@
  - Dijkstra's algorithm [(wiki)](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
  - Bellman-Ford algorithm [(wiki)](https://en.wikipedia.org/wiki/Bellman–Ford_algorithm)
  - Levit's algorithm (aka Pape-Levit's, aka D'Esopo-Pape) [(neerc.ifmo)](https://neerc.ifmo.ru/wiki/index.php?title=%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%9B%D0%B5%D0%B2%D0%B8%D1%82%D0%B0)
+ - Levit's algorithm with deque [(cp-algorithms)](https://cp-algorithms.com/graph/desopo_pape.html)
  - 0-1 BFS [(cp-algorithms)](https://cp-algorithms.com/graph/01_bfs.html)
  - 1-k BFS [(lksh)](https://archive.lksh.ru/2018/august/B'/notes/07.pdf)
  - Dial's algorithm (1-k BFS) [(codeforces)](https://codeforces.com/blog/entry/88408?locale=en)
