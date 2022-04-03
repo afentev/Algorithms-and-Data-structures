@@ -76,7 +76,7 @@ int32_t main() {
     if (dists[i] == inf) {
       std::cout << "*" << '\n';  // the vertex is unreachable
     } else if (dists[i] == inf + 1) {
-      std::cout << "-" << '\n';  // the vertex reachable but there is no shortes path
+      std::cout << "-" << '\n';  // the vertex is reachable but there is no shortest path
     } else {
       std::cout << dists[i] << '\n';
     }
