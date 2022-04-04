@@ -1,13 +1,9 @@
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <deque>
 
 struct Edge {
   int dst, w;
-};
-
-struct Label {
-  char m1, m2;
 };
 
 std::vector<int> dists;
@@ -16,39 +12,34 @@ std::vector<std::vector<Edge>> edges;
 int n, m;
 int inf = 30000;
 
+
+// At worst-case scenario this implementation performs in O(2^n)
+// There is an implementation with linear complexity: Levit.cpp
+// But in the average this one works faster
+// More info on this: https://codeforces.com/blog/entry/3793?locale=ru
+
 void Levit(int vertex) {
   dists.resize(n, inf);
   dists[vertex] = 0;
 
-  std::vector<Label> labels(n, Label{0, 1});
+  std::vector<int> labels(n, 2);
 
-  std::queue<int> m1Regular;
-  std::queue<int> m1Fast;
+  std::deque<int> m1{vertex};
 
-  m1Regular.push(vertex);
-  labels[vertex] = {1, 0};
-
-  while (!m1Regular.empty() || !m1Fast.empty()) {
-    int u;
-    if (m1Fast.empty()) {
-      u = m1Regular.front(); m1Regular.pop();
-    } else {
-      u = m1Fast.front(); m1Fast.pop();
-    }
-    labels[u].m1 = false;
+  while (!m1.empty()) {
+    int u = m1.front(); m1.pop_front();
+    labels[u] = 0;
     for (const auto& edge: edges[u]) {
       int dst = edge.dst;
-      if (labels[dst].m2) {
-        m1Regular.push(dst);
-        labels[dst].m1 = true;
-        labels[dst].m2 = false;
+      if (dists[dst] > dists[u] + edge.w) {
         dists[dst] = dists[u] + edge.w;
-      } else if (labels[dst].m1) {
-        dists[dst] = std::min(dists[dst], dists[u] + edge.w);
-      } else if (dists[dst] > dists[u] + edge.w) {
-        m1Fast.push(dst);
-        labels[dst].m1 = true;
-        dists[dst] = dists[u] + edge.w;
+        if (labels[dst] == 2) {
+          labels[dst] = 1;
+          m1.push_back(dst);
+        } else if (labels[dst] == 0) {
+          labels[dst] = 1;
+          m1.push_front(dst);
+        }
       }
     }
   }
