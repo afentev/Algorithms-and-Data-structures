@@ -18,32 +18,41 @@ int inf = INT64_MAX - 1;
 void SPFA(int vertex) {
   dists.resize(n, inf);
   dists[vertex] = 0;
-  std::queue<int> relaxated;
-  std::queue<int> iteration;
+  std::deque<int> relaxated;
+  std::deque<int> iteration;
   std::vector<char> onQueue(n, false);  // is vertex in queue now?
-  relaxated.push(vertex);
-  iteration.push(1);
+  relaxated.push_back(vertex);
+  iteration.push_back(1);
   onQueue[vertex] = true;
 
   while (!relaxated.empty() && iteration.front() <= n) {
-    int start = relaxated.front(); relaxated.pop();
-    int i = iteration.front(); iteration.pop();
+    int start = relaxated.front(); relaxated.pop_front();
+    int i = iteration.front(); iteration.pop_front();
     onQueue[start] = false;
 
     for (const auto& edge: edges[start]) {
       if (dists[edge.dst] > dists[start] + edge.w) {
+        // if relaxation happened in the last iteration -> the negative loop exists
+        if (i == n) {
+          dists[edge.dst] = inf + 1;
+          negativeLoop.push_back(edge.dst);
+          continue;
+        }
+
         dists[edge.dst] = dists[start] + edge.w;
         if (!onQueue[edge.dst]) {
-          relaxated.push(edge.dst);
-          iteration.push(i + 1);
+          onQueue[edge.dst] = true;
 
-          // if relaxation happened in the last iteration -> the negative loop exists
-          if (i == n) {
-            dists[edge.dst] = inf + 1;
-            negativeLoop.push_back(edge.dst);
+          // This is Small Label First optimization.
+          // You can use queue instead of deque and always push to the back
+          if (relaxated.empty() || dists[edge.dst] < dists[relaxated.front()]) {
+            relaxated.push_front(edge.dst);
+            iteration.push_front(i + 1);
+          } else {
+            relaxated.push_back(edge.dst);
+            iteration.push_back(i + 1);
           }
         }
-        onQueue[edge.dst] = true;
       }
     }
   }
