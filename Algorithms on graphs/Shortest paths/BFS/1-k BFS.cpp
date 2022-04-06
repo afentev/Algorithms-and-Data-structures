@@ -7,7 +7,11 @@ const int INF = 1e9;
 int k = -INF;
 int n, m;
 
-std::vector<std::map<int, int>> g;
+struct Edge {
+  int dst, w;
+};
+
+std::vector<std::vector<Edge>> g;
 std::vector<int> dist;
 
 void bfs1k(int vertex) {
@@ -21,10 +25,10 @@ void bfs1k(int vertex) {
       if (dist[u] != i) {
         continue;
       }
-      for (auto v: g[u]) {
-        if (dist[u] + v.second < dist[v.first]) {
-          dist[v.first] = dist[u] + v.second;
-          ar[(queue + v.second) % (k + 1)].push(v.first);
+      for (const auto& v: g[u]) {
+        if (dist[u] + v.w < dist[v.dst]) {
+          dist[v.dst] = dist[u] + v.w;
+          ar[(queue + v.w) % (k + 1)].push(v.dst);
         }
       }
 
@@ -40,14 +44,14 @@ void bfs1k(int vertex) {
  */
 int main() {
   std::cin >> n >> m;
-  g.resize(n, std::map<int, int>());
+  g.resize(n, std::vector<Edge>());
   dist.resize(n, INF);
 
   for (int i = 0; i < m; ++i) {
     int u, v, w;
     std::cin >> u >> v >> w;
     u--, v--;
-    g[u][v] = w;
+    g[u].push_back(Edge{v, w});
     k = std::max(k, w);
   }
 
