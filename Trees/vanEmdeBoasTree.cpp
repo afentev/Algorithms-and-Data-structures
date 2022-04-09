@@ -411,6 +411,7 @@ class vEB<3> {
   uint8_t bitset;
 };
 
+#include <cassert>
 
 void runTests() {
   vEB<30> t;
@@ -470,28 +471,32 @@ void runTests() {
 
 
 void runPerfTests() {
-  const int N = 1e6;
+  srand(42);
+  int N = 1e6;
 
-  std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+  std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
   vEB<30> vEB;
-  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+  std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 
   std::cout << "vEB<30> allocation: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
             << "ms" << std::endl;
 
-  begin = std::chrono::steady_clock::now();
+  begin = std::chrono::high_resolution_clock::now();
   std::set<int> testM;
-  end = std::chrono::steady_clock::now();
+  end = std::chrono::high_resolution_clock::now();
   std::cout << "set allocation: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
             << "ms\n" << std::endl;
 
   std::vector<int> keys, values;
   keys.reserve(N);
   values.reserve(N);
+
+  std::set<int> unique;
   for (int i = 0; i < N; ++i) {
-    keys.push_back(rand() % (1ull << 30));
-    values.push_back(rand() % (1ull << 30));
+    unique.insert(rand() % ((1 << 30) - 1));
   }
+  keys = std::vector(unique.begin(), unique.end());
+  N = keys.size();
 
   // -----------------------------------------------------------------------------------------------------------------
   begin = std::chrono::high_resolution_clock::now();
@@ -506,6 +511,7 @@ void runPerfTests() {
   for (int i = 0; i < N; ++i) {
     testM.insert(keys[i]);
   }
+
   end = std::chrono::high_resolution_clock::now();
   std::cout << "Set insertion: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms\n"
             << std::endl;
