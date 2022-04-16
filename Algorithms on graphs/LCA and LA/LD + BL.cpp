@@ -27,6 +27,9 @@ class TreeAncestor {
     if (k > d[node]) {
       return -1;
     }
+    if (k == 0) {
+      return node;
+    }
     int power = 31 - __builtin_clz(k);
     k &= ~(1u << power);
     node = liftings[node][power];
