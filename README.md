@@ -70,6 +70,7 @@
  - Binary Lifting for LA [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Jump_pointer_algorithm)
  - Longest Path Decomposition (LA) [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_1:_long-path_decomposition)
  - Ladder Decomposition (LA) [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_2:_extending_the_long_paths_into_ladders)
+ - Ladder Decomposition and Binary Lifting combined [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_3:_combining_the_two_approaches)
 
 ## Other data structures:
  - Disjoint set union (Union find) [(cp-algorithms)](https://cp-algorithms.com/data_structures/disjoint_set_union.html)

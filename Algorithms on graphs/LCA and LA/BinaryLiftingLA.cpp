@@ -27,19 +27,19 @@ class TreeAncestor {
     }
 
     int lg = ceil(log2(n));
-    dp.resize(n, vector<int> (lg, 0));  // 0-th vertex is root
+    liftings.resize(n, vector<int> (lg, 0));  // 0-th vertex is root
 
     // preprocess
     for (int i = 0; i < n; ++i) {
-      dp[i][0] = p[i];
+      liftings[i][0] = p[i];
     }
 
     for (int j = 1; j < lg; ++j) {
       for (int i = 0; i < n; ++i) {
-        if (dp[i][j - 1] != -1) {
-          dp[i][j] = dp[dp[i][j - 1]][j - 1];
+        if (liftings[i][j - 1] != -1) {
+          liftings[i][j] = liftings[liftings[i][j - 1]][j - 1];
         } else {
-          dp[i][j] = -1;
+          liftings[i][j] = -1;
         }
       }
     }
@@ -51,14 +51,14 @@ class TreeAncestor {
     }
     while (k) {
       int index = __builtin_ctz(k);
-      node = dp[node][index];
+      node = liftings[node][index];
       k &= k - 1;
     }
     return node;
   }
 
   vector<int> d;
-  vector<vector<int>> dp;
+  vector<vector<int>> liftings;
 };
 
 
