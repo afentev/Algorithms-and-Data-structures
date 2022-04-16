@@ -65,8 +65,11 @@
  - Prim's algorithm [(wiki)](https://en.wikipedia.org/wiki/Prim%27s_algorithm)
  - Kruskal's algorithm [(wiki)](https://en.wikipedia.org/wiki/Kruskal's_algorithm)
 
-### LCA:
- - Binary Lifting [(cp-algorithms)](https://cp-algorithms.com/graph/lca_binary_lifting.html)
+### Least common ancestor (LCA) and Level ancestor problem (LA):
+ - Binary Lifting for LCA [(cp-algorithms)](https://cp-algorithms.com/graph/lca_binary_lifting.html)
+ - Binary Lifting for LA [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Jump_pointer_algorithm)
+ - Longest Path Decomposition (LA) [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_1:_long-path_decomposition)
+ - Ladder Decomposition (LA) [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_2:_extending_the_long_paths_into_ladders)
 
 ## Other data structures:
  - Disjoint set union (Union find) [(cp-algorithms)](https://cp-algorithms.com/data_structures/disjoint_set_union.html)
