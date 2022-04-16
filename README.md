@@ -71,6 +71,7 @@
  - Longest Path Decomposition (LA) [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_1:_long-path_decomposition)
  - Ladder Decomposition (LA) [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_2:_extending_the_long_paths_into_ladders)
  - Ladder Decomposition and Binary Lifting combined [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_3:_combining_the_two_approaches)
+ - The Macro-Micro-Tree Algorithm [(mit.edu)](http://courses.csail.mit.edu/6.897/spring05/lec/lec19.pdf)
 
 ## Other data structures:
  - Disjoint set union (Union find) [(cp-algorithms)](https://cp-algorithms.com/data_structures/disjoint_set_union.html)
