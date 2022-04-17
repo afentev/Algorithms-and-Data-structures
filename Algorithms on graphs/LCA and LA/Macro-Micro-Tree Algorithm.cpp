@@ -8,8 +8,7 @@ using namespace std;
 
 class TreeAncestor {
  public:
-  TreeAncestor(int n, vector<int>& p): B((32 - __builtin_clz(n - 1)) / 4) {
-    this->n = n;
+  TreeAncestor(int n, vector<int>& p): n(n), B((32 - __builtin_clz(n - 1)) / 4) {
     parents = p;
 
     children.resize(n, vector<int>());
@@ -29,10 +28,10 @@ class TreeAncestor {
     }
     if (isPruned[node]) {
       if (microDepth[node] >= k) {
-        return precalc[microTreeType[node]][vertexEuler[node]][k];
+        return precalc[microTreeType[node]][eulerTour[node]][k];
       } else {
         k -= microDepth[node] + 1;
-        node = ptr2child[microRoot[node]];
+        node = parents[microRoot[node]];
       }
     }
     k += d[ptr2child[node]] - d[node];
@@ -57,7 +56,7 @@ class TreeAncestor {
     isPruned.resize(n, false);
     microTreeType.resize(n, 0u);
     microRoot.resize(n, -1);
-    vertexEuler.resize(n, -1);
+    eulerTour.resize(n, -1);
     precalc.resize(1u << (2 * B));
 
     vector<int> path;
@@ -81,7 +80,7 @@ class TreeAncestor {
 
     isPruned[vertex] = subtreeSize <= B;
     if (!isPruned[vertex]) {
-      // here we create binary lifting array for leaf node
+      // here we create binary lifting array for the leaf node
       if (isLeaf[vertex]) {
         ptr2child[vertex] = vertex;
 
@@ -93,11 +92,13 @@ class TreeAncestor {
       }
 
       for (int child: children[vertex]) {
-        if (!isPruned[child]) continue;
+        if (!isPruned[child]) {
+          continue;
+        }
 
-        uint32_t code = 0;  // euler tour in binary digit system
+        uint32_t code = 0;  // Euler tour in binary digit system
         int pos = 0;
-        setPrunedInfo(child, vertex, 0, code, pos, child);
+        setPrunedInfo(child, 0, code, pos, child);
         microTreeType[child] = code;
 
         if (precalc[code].empty()) {
@@ -113,13 +114,12 @@ class TreeAncestor {
     return subtreeSize;
   }
 
-  void setPrunedInfo(int vertex, int ptr, int depth, uint32_t& code, int& pos, int root) {
+  void setPrunedInfo(int vertex, int depth, uint32_t& code, int& pos, int root) {
     ++pos;
-    ptr2child[vertex] = ptr;
     microDepth[vertex] = depth;
     microRoot[vertex] = root;
     for (int child: children[vertex]) {
-      setPrunedInfo(child, ptr, depth + 1, code, pos, root);
+      setPrunedInfo(child, depth + 1, code, pos, root);
     }
     code |= (1u << pos++);
   }
@@ -127,11 +127,11 @@ class TreeAncestor {
   void makePrecalc(int vertex, int code, int& eulerNumber, stack<int>& path) {
     path.push(vertex);
 
-    vertexEuler[vertex] = eulerNumber;
+    eulerTour[vertex] = eulerNumber;
     stack<int> poped;
     int going = vertex;
     for (int level = 0; isPruned[going]; ++level) {
-      precalc[code][eulerNumber][level] = vertexEuler[path.top()];
+      precalc[code][eulerNumber][level] = eulerTour[path.top()];
       poped.push(path.top());
       path.pop();
       going = parents[going];
@@ -171,7 +171,7 @@ class TreeAncestor {
   }
 
   void createLadders() {
-    for (auto& path : longestPaths) {
+    for (auto& path: longestPaths) {
       int size = longestPaths.size();
       for (int j = 0; j < size && parents[path.back()] != -1; ++j) {
         path.push_back(parents[path.back()]);
@@ -180,21 +180,21 @@ class TreeAncestor {
   }
 
   int n;
-  const int B;
-  vector<int> d;  // distnce from root
-  vector<vector<int>> liftings;
+  const int B;  // microtree trashhold
+  vector<int> d;  // distance from root
+  vector<vector<int>> liftings;  // binary liftings for the leafs
   vector<int> parents;
   vector<vector<int>> children;
-  vector<vector<int>> longestPaths;
+  vector<vector<int>> longestPaths;  // decomposition
   vector<pair<int, int>> matching;  // global and local indexes in paths decomposition
-  vector<int> ptr2child;
+  vector<int> ptr2child;  // pointer to any non-pruned leaf node in the subtree
   vector<char> isLeaf;
   vector<char> isPruned;  // true or false
   vector<int> microDepth;  // depth from root in a microTree
-  vector<uint32_t> microTreeType;  // euler tour of vertex's microtree
+  vector<uint32_t> microTreeType;  // Euler tour of vertex's microtree (code)
   vector<int> microRoot;  // root of current vertex in it's microtree
   vector<vector<vector<int>>> precalc;  // code -> vertex -> height
-  vector<int> vertexEuler;  // number of vertex in Euler tour
+  vector<int> eulerTour;  // number of the vertex in the Euler tour
 };
 
 
