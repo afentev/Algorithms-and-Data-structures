@@ -96,16 +96,16 @@ class TreeAncestor {
           continue;
         }
 
-        uint32_t code = 0;  // Euler tour in binary digit system
+        uint32_t mask = 0;  // Euler tour in binary digit system
         int pos = 0;
-        setPrunedInfo(child, 0, code, pos, child);
-        microTreeType[child] = code;
+        setPrunedInfo(child, 0, mask, pos, child);
+        microTreeType[child] = mask;
 
-        if (precalc[code].empty()) {
-          precalc[code].resize(B, vector<int> (B, -1));
+        if (precalc[mask].empty()) {
+          precalc[mask].resize(B, vector<int> (B, -1));
           stack<int> path;
           int eulerNumber = 0;
-          makePrecalc(child, code, eulerNumber, path);
+          makePrecalc(child, mask, eulerNumber, path);
         }
       }
     }
@@ -114,24 +114,24 @@ class TreeAncestor {
     return subtreeSize;
   }
 
-  void setPrunedInfo(int vertex, int depth, uint32_t& code, int& pos, int root) {
+  void setPrunedInfo(int vertex, int depth, uint32_t& mask, int& pos, int root) {
     ++pos;
     microDepth[vertex] = depth;
     microRoot[vertex] = root;
     for (int child: children[vertex]) {
-      setPrunedInfo(child, depth + 1, code, pos, root);
+      setPrunedInfo(child, depth + 1, mask, pos, root);
     }
-    code |= (1u << pos++);
+    mask |= (1u << pos++);
   }
 
-  void makePrecalc(int vertex, int code, int& eulerNumber, stack<int>& path) {
+  void makePrecalc(int vertex, int mask, int& eulerNumber, stack<int>& path) {
     path.push(vertex);
 
     eulerTour[vertex] = eulerNumber;
     stack<int> poped;
     int going = vertex;
     for (int level = 0; isPruned[going]; ++level) {
-      precalc[code][eulerNumber][level] = eulerTour[path.top()];
+      precalc[mask][eulerNumber][level] = eulerTour[path.top()];
       poped.push(path.top());
       path.pop();
       going = parents[going];
@@ -142,7 +142,7 @@ class TreeAncestor {
     }
 
     for (int child: children[vertex]) {
-      makePrecalc(child, code, ++eulerNumber, path);
+      makePrecalc(child, mask, ++eulerNumber, path);
     }
     path.pop();
   }
@@ -191,9 +191,9 @@ class TreeAncestor {
   vector<char> isLeaf;
   vector<char> isPruned;  // true or false
   vector<int> microDepth;  // depth from root in a microTree
-  vector<uint32_t> microTreeType;  // Euler tour of vertex's microtree (code)
+  vector<uint32_t> microTreeType;  // Euler tour of vertex's microtree (mask)
   vector<int> microRoot;  // root of current vertex in it's microtree
-  vector<vector<vector<int>>> precalc;  // code -> vertex -> height
+  vector<vector<vector<int>>> precalc;  // mask -> vertex -> height
   vector<int> eulerTour;  // number of the vertex in the Euler tour
 };
 
