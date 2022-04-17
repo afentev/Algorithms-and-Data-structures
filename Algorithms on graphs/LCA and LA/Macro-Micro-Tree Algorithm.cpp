@@ -5,22 +5,10 @@
 
 using namespace std;
 
-int64_t binpow (int64_t a, int64_t n) {
-  int64_t res = 1;
-  while (n) {
-    if (n & 1) {
-      res *= a;
-    }
-    a *= a;
-    n >>= 1;
-  }
-  return res;
-}
-
 
 class TreeAncestor {
  public:
-  TreeAncestor(int n, vector<int>& p): B(ceil(log2(n)) / 4) {
+  TreeAncestor(int n, vector<int>& p): B((32 - __builtin_clz(n - 1)) / 4) {
     this->n = n;
     parents = p;
 
