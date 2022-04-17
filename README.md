@@ -66,6 +66,7 @@
  - Kruskal's algorithm [(wiki)](https://en.wikipedia.org/wiki/Kruskal's_algorithm)
 
 ### Least common ancestor (LCA) and Level ancestor problem (LA):
+ - Solving LCA via RMQ
  - Binary Lifting for LCA [(cp-algorithms)](https://cp-algorithms.com/graph/lca_binary_lifting.html)
  - Binary Lifting for LA [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Jump_pointer_algorithm)
  - Longest Path Decomposition (LA) [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_1:_long-path_decomposition)
