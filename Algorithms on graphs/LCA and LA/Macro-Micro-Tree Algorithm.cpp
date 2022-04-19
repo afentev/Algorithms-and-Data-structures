@@ -6,19 +6,25 @@
 using namespace std;
 
 
+// solution for https://leetcode.com/problems/kth-ancestor-of-a-tree-node/
+// this problem has weak tests. the solution for the problem with more solid tests provided below
 class TreeAncestor {
  public:
-  TreeAncestor(int n, vector<int>& p): n(n), B((32 - __builtin_clz(n - 1)) / 4) {
+  TreeAncestor(int n, vector<int>& p): n(n), B(n == 1? 1: (32 - __builtin_clz(n - 1)) / 4) {
     parents = p;
 
     children.resize(n, vector<int>());
-    for (int i = 1; i < n; ++i) {
-      children[p[i]].push_back(i);
+    for (int i = 0; i < n; ++i) {
+      if (p[i] != -1) {
+        children[p[i]].push_back(i);
+      } else {
+        treeRoot = i;
+      }
     }
 
     macromicro();
     matching.resize(n, {0, 0});
-    createPaths(0, 0);
+    createPaths(treeRoot, 0);
     createLadders();
   }
 
@@ -26,11 +32,13 @@ class TreeAncestor {
     if (k > d[node]) {
       return -1;
     }
-    if (isPruned[node]) {
-      if (microDepth[node] >= k) {
-        return precalc[microTreeType[node]][eulerTour[node]][k];
+    if (isPruned[node] == 1) {
+      int microDepth = d[node] - d[microRoot[node]];
+      if (microDepth >= k) {
+        int root = microRoot[node];
+        return eulerDecode[root][precalc[microTreeType[root]][eulerTour[node]][k]];
       } else {
-        k -= microDepth[node] + 1;
+        k -= microDepth + 1;
         node = parents[microRoot[node]];
       }
     }
@@ -52,15 +60,17 @@ class TreeAncestor {
 
     ptr2child.resize(n, 0);
     isLeaf.resize(n, false);
-    microDepth.resize(n, -1);
-    isPruned.resize(n, false);
+    isPruned.resize(n, 2);  // 0 - nonPruned, 1 - pruned, 2 - in process
     microTreeType.resize(n, 0u);
     microRoot.resize(n, -1);
     eulerTour.resize(n, -1);
     precalc.resize(1u << (2 * B));
 
     vector<int> path;
-    pruneTrees(0, path);
+    pruneTrees(treeRoot, path);
+
+    eulerDecode.resize(n);
+    findPrunedRoots(treeRoot);
   }
 
   int pruneTrees(int vertex, vector<int>& curPath) {
@@ -71,7 +81,7 @@ class TreeAncestor {
     bool isCurLeaf = true;
     for (int child: children[vertex]) {
       subtreeSize += pruneTrees(child, curPath);
-      if (!isPruned[child]) {
+      if (isPruned[child] == 0) {
         isCurLeaf = false;
         ptr2child[vertex] = ptr2child[child];
       }
@@ -79,7 +89,7 @@ class TreeAncestor {
     isLeaf[vertex] = isCurLeaf;
 
     isPruned[vertex] = subtreeSize <= B;
-    if (!isPruned[vertex]) {
+    if (isPruned[vertex] == 0) {
       // here we create binary lifting array for the leaf node
       if (isLeaf[vertex]) {
         ptr2child[vertex] = vertex;
@@ -90,48 +100,51 @@ class TreeAncestor {
           offset *= 2;
         }
       }
-
-      for (int child: children[vertex]) {
-        if (!isPruned[child]) {
-          continue;
-        }
-
-        uint32_t mask = 0;  // Euler tour in binary digit system
-        int pos = 0;
-        setPrunedInfo(child, 0, mask, pos, child);
-        microTreeType[child] = mask;
-
-        if (precalc[mask].empty()) {
-          precalc[mask].resize(B, vector<int> (B, -1));
-          stack<int> path;
-          int eulerNumber = 0;
-          makePrecalc(child, mask, eulerNumber, path);
-        }
-      }
     }
 
     curPath.pop_back();
     return subtreeSize;
   }
 
-  void setPrunedInfo(int vertex, int depth, uint32_t& mask, int& pos, int root) {
+  void findPrunedRoots(int vertex) {
+    if (isPruned[vertex] == 1 && parents[vertex] != -1 && isPruned[parents[vertex]] == 0) {
+      uint32_t mask = 0;  // Euler tour in binary digit system
+      int pos = 0;
+      int euler = 0;
+      eulerDecode[vertex].resize(B, -1);
+      setInfoInPrunedTree(vertex, 0, mask, pos, euler, vertex);
+      microTreeType[vertex] = mask;
+
+      if (precalc[mask].empty()) {
+        precalc[mask].resize(B, vector<int>(B, -1));
+        stack<int> path;
+        makePrecalc(vertex, mask, path);
+      }
+    } else if (isPruned[vertex] == 0) {
+      for (int child: children[vertex]) {
+        findPrunedRoots(child);
+      }
+    }
+  }
+
+  void setInfoInPrunedTree(int vertex, int depth, uint32_t& mask, int& pos, int& eulerNumber, int root) {
     ++pos;
-    microDepth[vertex] = depth;
     microRoot[vertex] = root;
+    eulerTour[vertex] = eulerNumber;
+    eulerDecode[root][eulerNumber] = vertex;
     for (int child: children[vertex]) {
-      setPrunedInfo(child, depth + 1, mask, pos, root);
+      setInfoInPrunedTree(child, depth + 1, mask, pos, ++eulerNumber, root);
     }
     mask |= (1u << pos++);
   }
 
-  void makePrecalc(int vertex, int mask, int& eulerNumber, stack<int>& path) {
+  void makePrecalc(int vertex, int mask, stack<int>& path) {
     path.push(vertex);
 
-    eulerTour[vertex] = eulerNumber;
     stack<int> poped;
     int going = vertex;
-    for (int level = 0; isPruned[going]; ++level) {
-      precalc[mask][eulerNumber][level] = eulerTour[path.top()];
+    for (int level = 0; isPruned[going] == 1; ++level) {
+      precalc[mask][eulerTour[vertex]][level] = eulerTour[path.top()];
       poped.push(path.top());
       path.pop();
       going = parents[going];
@@ -142,7 +155,7 @@ class TreeAncestor {
     }
 
     for (int child: children[vertex]) {
-      makePrecalc(child, mask, ++eulerNumber, path);
+      makePrecalc(child, mask, path);
     }
     path.pop();
   }
@@ -151,7 +164,9 @@ class TreeAncestor {
     int maxima = depth;
     int continuation;
     for (int child: children[vertex]) {
-      if (isPruned[child]) continue;
+      if (isPruned[child] == 1) {
+        continue;
+      }
 
       int curDepth = createPaths(child, depth + 1);
       if (curDepth > maxima) {
@@ -189,22 +204,55 @@ class TreeAncestor {
   vector<pair<int, int>> matching;  // global and local indexes in paths decomposition
   vector<int> ptr2child;  // pointer to any non-pruned leaf node in the subtree
   vector<char> isLeaf;
-  vector<char> isPruned;  // true or false
-  vector<int> microDepth;  // depth from root in a microTree
+  vector<char> isPruned;  // true or false or unprocessed
   vector<uint32_t> microTreeType;  // Euler tour of vertex's microtree (mask)
   vector<int> microRoot;  // root of current vertex in it's microtree
   vector<vector<vector<int>>> precalc;  // mask -> vertex -> height
   vector<int> eulerTour;  // number of the vertex in the Euler tour
+  vector<vector<int>> eulerDecode;  // root -> euler number
+  int treeRoot;
 };
 
 
-// solution for https://leetcode.com/problems/kth-ancestor-of-a-tree-node/
+int n;
+vector<vector<int>> children;
+vector<int> p;
+vector<int> d;
+
+// solution for https://codeforces.com/group/QmrArgR1Jp/contest/279285/problem/A
 int main() {
-  auto x = vector<int>{-1, 0, 1, 2, 3, 3, 3, 2, 7, 8, 9, 9, 9, 8, 1, 14, 15, 15, 17, 0, 19, 20, 20, 0, 0, 24, 25, 26, 27, 27, 29, 27};
-  TreeAncestor* treeAncestor = new TreeAncestor(32, x);
-  auto y = treeAncestor->precalc[212];
-  cout << treeAncestor->getKthAncestor(3, 1) << '\n';
-  cout << treeAncestor->getKthAncestor(5, 2) << '\n';
-  cout << treeAncestor->getKthAncestor(6, 3) << '\n';
-  delete treeAncestor;
+  std::cin.tie(nullptr);
+  std::ios_base::sync_with_stdio(false);
+
+  std::cin >> n;
+  p.resize(n, 0);
+  d.resize(n, 0);
+
+  children.resize(n, std::vector<int>());
+
+  d[0] = 0;
+  // read parents
+  int index = -1;
+  for (int i = 0; i < n; ++i) {
+    std::cin >> p[i];
+    --p[i];
+  }
+  TreeAncestor t(n, p);
+  for (int j = 0; j < n; ++j) {
+    int i = j;
+    if (j < index) {
+      ++i;
+    } else if (j == index) {
+      i = 0;
+    }
+    int k = 1;
+    int res = t.getKthAncestor(i, k);
+    cout << j + 1 << ": ";
+    while (res != -1) {
+      cout << res + 1 << ' ';
+      k *= 2;
+      res = t.getKthAncestor(i, k);
+    }
+    cout << '\n';
+  }
 }
