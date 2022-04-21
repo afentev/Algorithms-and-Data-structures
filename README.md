@@ -39,6 +39,7 @@
 
 ## Data Structures for RMQ and similar problems:
  - Segment tree [(wiki)](https://en.wikipedia.org/wiki/Segment_tree)
+ - Segment tree with lazy propagation [(cp-algorithms)](https://cp-algorithms.com/data_structures/segment_tree.html#range-updates-lazy-propagation)
  - Bottom-up Segment tree (aka ZKW Segment tree) [(codeforces)](https://codeforces.com/blog/entry/18051)
  - Fenwick tree [(wiki)](https://en.wikipedia.org/wiki/Fenwick_tree)
  - Sparse table [(cp-algorithms)](https://cp-algorithms.com/data_structures/sparse-table.html)
