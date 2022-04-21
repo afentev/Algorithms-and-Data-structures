@@ -62,7 +62,8 @@
  - 1-k BFS [(lksh)](https://archive.lksh.ru/2018/august/B'/notes/07.pdf)
  - Dial's algorithm (1-k BFS) [(codeforces)](https://codeforces.com/blog/entry/88408?locale=en)
 
-### Algorithms for MST:
+### Algorithms and Data structures for trees:
+ - Heavy-light decomposition [(cp-algorithms)](https://cp-algorithms.com/graph/hld.html)
  - Prim's algorithm [(wiki)](https://en.wikipedia.org/wiki/Prim%27s_algorithm)
  - Kruskal's algorithm [(wiki)](https://en.wikipedia.org/wiki/Kruskal's_algorithm)
 
