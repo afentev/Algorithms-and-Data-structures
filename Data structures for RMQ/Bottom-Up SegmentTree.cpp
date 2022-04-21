@@ -12,7 +12,7 @@ struct SegmentTree {
 
   SegmentTree(const std::vector<int>& a) {
     n = a.size();
-    t.resize(n << 1, 0);
+    t.resize(n << 1, neutral);
     build(a);
   }
 

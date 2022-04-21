@@ -11,53 +11,57 @@ struct SegmentTree {
   }
 
   SegmentTree(const std::vector<int>& a) {
-    n = getPower(a.size());
-    t.resize(n << 1, 0);
-    build(a);
+    n = a.size();
+    t.resize(n << 2, neutral);
+    build(a, 1, 0, n - 1);
   }
 
-  void build(const std::vector<int>& a) {
-    for (int i = 0; i < a.size(); ++i) {
-      t[n + i] = a[i];
-    }
-    for (int i = n - 1; i > 0; --i) {
+  void build(const std::vector<int>& a, int i, int lSubSeg, int rSubSeg) {
+    if (rSubSeg == lSubSeg == 1) {
+      t[i] = a[lSubSeg];
+    } else {
+      int mid = (lSubSeg + rSubSeg) >> 1;
+      build(a, i << 1, lSubSeg, mid);
+      build(a, (i << 1) | 1, mid + 1, rSubSeg);
       t[i] = op(t[i << 1], t[(i << 1) | 1]);
     }
   }
 
-  int query(int l, int r) {  // [l; r)
-    l += n;
-    r += n;
-    int ans = neutral;
-    while (l < r) {
-      if (l & 1) {
-        ans = op(ans, t[l++]);
-      }
-      if (r & 1) {
-        ans = op(ans, t[--r]);
-      }
-      l >>= 1;
-      r >>= 1;
+  int query(int l, int r) {  // [l; r]
+    return query(1, 0, n - 1, l, r);
+  }
+
+  int query(int i, int lSubSeg, int rSubSeg, int lQuery, int rQuery) {
+    if (lQuery > rSubSeg || rQuery < lSubSeg) {
+      return neutral;
     }
-    return ans;
+    if (lQuery <= lSubSeg && rSubSeg <= rQuery) {
+      return t[i];
+    }
+    int mid = (lSubSeg + rSubSeg) >> 1;
+    int left = query(i << 1, lSubSeg, mid, lQuery, rQuery);
+    int right = query((i << 1) | 1, mid + 1, rSubSeg, lQuery, rQuery);
+
+    return op(left, right);
   }
 
   void update(int pos, int newVal) {
-    pos += n;
-    t[pos] = newVal;
-    pos >>= 1;
-    while (pos > 0) {
-      t[pos] = op(t[pos << 1], t[(pos << 1) | 1]);
-      pos >>= 1;
-    }
+    update(1, 0, n - 1, pos, newVal);
   }
 
-  static int getPower(int n) {
-    int ans = 1;
-    while (ans < n) {
-      ans <<= 1;
+  void update(int i, int lSubSeg, int rSubSeg, int pos, int newVal) {
+    if (lSubSeg == rSubSeg) {
+      t[i] = newVal;
+    } else {
+      int mid = (lSubSeg + rSubSeg) >> 1;
+      if (pos <= mid) {
+        update(i << 1, lSubSeg, mid, pos, newVal);
+      } else {
+        update((i << 1) | 1, mid + 1, rSubSeg, pos, newVal);
+      }
+
+      t[i] = op(t[i << 1], t[(i << 1) | 1]);
     }
-    return ans;
   }
 
   std::vector<int> t;
@@ -85,7 +89,7 @@ int32_t main() {
     if (command == "sum") {
       int l, r;
       std::cin >> l >> r;
-      --l;
+      --l, --r;
       std::cout << tree.query(l, r) << '\n';
     } else {
       int index, newVal;
