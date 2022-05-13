@@ -20,7 +20,7 @@ class AVL {
 
   void fixHeight(Node* vertex) {
     size_t hLeft = 0;
-    size_t hRight;
+    size_t hRight = 0;
     if (vertex->left != nullptr) {
       hLeft = vertex->left->height;
     }
