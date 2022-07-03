@@ -77,6 +77,7 @@
  - Ladder Decomposition and Binary Lifting combined [(wiki)](https://en.wikipedia.org/wiki/Level_ancestor_problem#Stage_3:_combining_the_two_approaches)
  - The Macro-Micro-Tree Algorithm [(mit.edu)](http://courses.csail.mit.edu/6.897/spring05/lec/lec19.pdf)
  - Farach-Colton and Bender Algorithm [(cp-algorithms)](https://cp-algorithms.com/graph/lca_farachcoltonbender.html)
+ - Tarjan's offline LCA algorithm [(wiki)](https://en.wikipedia.org/wiki/Tarjan's_off-line_lowest_common_ancestors_algorithm)
 
 ## Other data structures:
  - Disjoint set union (Union find) [(cp-algorithms)](https://cp-algorithms.com/data_structures/disjoint_set_union.html)
