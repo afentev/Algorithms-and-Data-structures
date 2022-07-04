@@ -78,6 +78,7 @@
  - The Macro-Micro-Tree Algorithm [(mit.edu)](http://courses.csail.mit.edu/6.897/spring05/lec/lec19.pdf)
  - Farach-Colton and Bender Algorithm [(cp-algorithms)](https://cp-algorithms.com/graph/lca_farachcoltonbender.html)
  - Tarjan's offline LCA algorithm [(wiki)](https://en.wikipedia.org/wiki/Tarjan's_off-line_lowest_common_ancestors_algorithm)
+ - Schieber-Vishkin algorithm [(neerc.ifmo)](http://neerc.ifmo.ru/wiki/index.php?title=%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%A8%D0%B8%D0%B1%D0%B5%D1%80%D0%B0-%D0%92%D0%B8%D1%88%D0%BA%D0%B8%D0%BD%D0%B0)
 
 ## Other data structures:
  - Disjoint set union (Union find) [(cp-algorithms)](https://cp-algorithms.com/data_structures/disjoint_set_union.html)
